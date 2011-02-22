@@ -4,9 +4,15 @@
 	<comment></comment>
 	<projects>
 	</projects>
+		<buildCommand>
+			<name>org.maven.ide.eclipse.maven2Builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	<buildSpec>
 	</buildSpec>
 	<natures>
+		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
 		<nature>org.maven.ide.eclipse.maven2Nature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>

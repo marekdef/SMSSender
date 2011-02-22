@@ -61,8 +61,8 @@
 						<phase>package</phase>
 						<configuration>
 							<target>
-								<delete file="${project.build.directory}/${project.name}.apk"/>
-								<symlink link="${project.build.directory}/${project.name}.apk" resource="${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}" />
+								<delete file="${project.build.directory}/android-classes/${project.name}.apk"/>
+								<symlink link="${project.build.directory}/android-classes/${project.name}.apk" resource="${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}" />
 							</target>
 						</configuration>
 						<goals>
