@@ -4,6 +4,7 @@
   <artifactId>smssender-root</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
+  <name>smssender-root</name>
   
   <modules>
   	<module>android-number-picker</module>
