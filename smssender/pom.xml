@@ -5,12 +5,13 @@
 	<artifactId>smssender</artifactId>
 	<packaging>apk</packaging>
 	<version>0.0.1-SNAPSHOT</version>
+	<name>smssender</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>android</artifactId>
-			<version>2.2.1</version>
+			<version>2.1.2</version>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
@@ -61,8 +62,10 @@
 						<phase>package</phase>
 						<configuration>
 							<target>
-								<delete file="${project.build.directory}/android-classes/${project.name}.apk"/>
-								<symlink link="${project.build.directory}/android-classes/${project.name}.apk" resource="${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}" />
+								<property name="source" value="${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}" />
+								<property name="destination" value="${project.build.directory}/classes/${project.name}.apk" />
+							<delete file="${destination}"/>
+								<copy file="${source}" tofile="${destination}" />
 							</target>
 						</configuration>
 						<goals>
