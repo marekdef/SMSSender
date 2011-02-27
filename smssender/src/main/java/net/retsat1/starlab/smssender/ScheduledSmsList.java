@@ -9,6 +9,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import net.retsat1.starlab.smssender.R;
+
 public class ScheduledSmsList extends Activity {
     private static final String TAG = "ScheduledSmsList";
 

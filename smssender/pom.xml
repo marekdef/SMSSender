@@ -1,22 +1,31 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>net.retsat1.starlab</groupId>
-	<artifactId>SmsSender</artifactId>
+	<groupId>net.retsat1.starlab.android.smssender</groupId>
+	<artifactId>smssender</artifactId>
 	<packaging>apk</packaging>
 	<version>0.0.1-SNAPSHOT</version>
+	<name>smssender</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>android</artifactId>
-			<version>2.2.1</version>
+			<version>2.1.2</version>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+	<!--
+				<excludes>**/AndroidManifest.xml</excludes>
+	-->
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -38,9 +47,32 @@
 						<avd>2.2-HVGA</avd>
 					</emulator>
 					<deleteConflictingFiles>true</deleteConflictingFiles>
+					<resourceDirectory>src/main/resources</resourceDirectory>
 				</configuration>
 				<version>2.8.4</version>
 				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.6</version>
+
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<configuration>
+							<target>
+								<property name="source" value="${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}" />
+								<property name="destination" value="${project.build.directory}/classes/${project.name}.apk" />
+							<delete file="${destination}"/>
+								<copy file="${source}" tofile="${destination}" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
