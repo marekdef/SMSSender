@@ -27,5 +27,10 @@
 			<type>2</type>
 			<locationURI>PROJECT_LOC/target/generated-sources/r</locationURI>
 		</link>
+		<link>
+			<name>res</name>
+			<type>2</type>
+			<locationURI>PROJECT_LOC/src/main/resources</locationURI>
+		</link>
 	</linkedResources>
 </projectDescription>
