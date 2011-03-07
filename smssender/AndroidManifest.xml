@@ -11,7 +11,7 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<receiver android:name=".receiver.SheduleSmsService"
+		<receiver android:name=".receiver.SheduleSmsReceiver"
 			android:process=":remote" />
 		<provider android:name=".providers.SheduleSmsContentProvider"
 			android:authorities="net.retsat1.starlab.smssender.providers.SheduleSmsContentProvider" />

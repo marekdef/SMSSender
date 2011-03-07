@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
-public class SheduleSmsService extends BroadcastReceiver {
+public class SheduleSmsReceiver extends BroadcastReceiver {
 
 	private static final String TAG = "SheduleSmsService";
 	private ConcurrentLinkedQueue<SmsMessage> smsMessages = new ConcurrentLinkedQueue<SmsMessage>();

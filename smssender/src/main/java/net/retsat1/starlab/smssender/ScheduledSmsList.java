@@ -70,7 +70,7 @@ public class ScheduledSmsList extends Activity implements OnClickListener {
 	int i = 0;
 	private void sendMessage(long currentTimeMillis, String number,
 			String message) {
-		Intent intent = new Intent(this, net.retsat1.starlab.smssender.receiver.SheduleSmsService.class);
+		Intent intent = new Intent(this, net.retsat1.starlab.smssender.receiver.SheduleSmsReceiver.class);
 		intent.putExtra(SmsMessage.SENDER, "ja");
 		intent.putExtra(SmsMessage.DATA, currentTimeMillis+"");
 		intent.putExtra(SmsMessage.RECEIVER, number);
