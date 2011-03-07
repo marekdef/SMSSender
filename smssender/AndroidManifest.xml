@@ -15,5 +15,8 @@
 			android:process=":remote" />
 		<provider android:name=".providers.SheduleSmsContentProvider"
 			android:authorities="net.retsat1.starlab.smssender.providers.SheduleSmsContentProvider" />
+		  
+			
 	</application>
+	<uses-permission android:name="android.permission.SEND_SMS" />
 </manifest>
