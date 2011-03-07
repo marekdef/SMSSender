@@ -15,21 +15,29 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
+		<!-- 
+		<dependency>
+			<groupId>net.starlab.retsat1.android</groupId>
+			<artifactId>android-number-picker-old</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		 -->
 		<dependency>
 			<groupId>net.starlab.retsat1.android</groupId>
 			<artifactId>android-number-picker</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- 
+		 -->
 	</dependencies>
 
 	<build>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
-	<!--
-				<excludes>**/AndroidManifest.xml</excludes>
-	-->
+				<!-- <excludes>**/AndroidManifest.xml</excludes> -->
 			</resource>
 		</resources>
 		<plugins>
@@ -68,9 +76,11 @@
 						<phase>package</phase>
 						<configuration>
 							<target>
-								<property name="source" value="${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}" />
-								<property name="destination" value="${project.build.directory}/classes/${project.name}.apk" />
-							<delete file="${destination}"/>
+								<property name="source"
+									value="${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}" />
+								<property name="destination"
+									value="${project.build.directory}/classes/${project.name}.apk" />
+								<delete file="${destination}" />
 								<copy file="${source}" tofile="${destination}" />
 							</target>
 						</configuration>
