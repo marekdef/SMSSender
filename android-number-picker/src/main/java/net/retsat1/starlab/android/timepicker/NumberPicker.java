@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package android.widget;
+package net.retsat1.starlab.android.timepicker;
 
-import com.android.internal.R;
+import net.retsat1.starlab.android.timepicker.R;
 
-import android.annotation.Widget;
 import android.content.Context;
 import android.os.Handler;
 import android.text.InputFilter;
@@ -28,6 +27,9 @@ import android.text.method.NumberKeyListener;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 /**
  * A view for selecting a number
@@ -36,7 +38,6 @@ import android.view.View;
  * 
  * @hide
  */
-@Widget
 public class NumberPicker extends LinearLayout {
 
 	/**

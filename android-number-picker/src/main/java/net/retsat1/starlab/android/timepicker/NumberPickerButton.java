@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package android.widget;
+package net.retsat1.starlab.android.timepicker;
+
+import net.retsat1.starlab.android.timepicker.R;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.ImageButton;
-import android.widget.NumberPicker;
 
-import com.android.internal.R;
 
 /**
  * This class exists purely to cancel long click events, that got

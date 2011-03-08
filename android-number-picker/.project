@@ -17,9 +17,20 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
 		<nature>org.maven.ide.eclipse.maven2Nature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
 	<linkedResources>
+	<link>
+			<name>gen</name>
+			<type>2</type>
+			<locationURI>PROJECT_LOC/target/generated-sources/r</locationURI>
+		</link>
+		<link>
+			<name>res</name>
+			<type>2</type>
+			<locationURI>PROJECT_LOC/src/main/resources</locationURI>
+		</link>
 	</linkedResources>
 </projectDescription>
