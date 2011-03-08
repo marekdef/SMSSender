@@ -4,8 +4,8 @@
 	android:layout_height="fill_parent" android:id="@+id/topLayaout">
 	<DatePicker android:id="@+id/dataPicker" android:layout_width="wrap_content"
 		android:layout_height="wrap_content"></DatePicker>
-	<EditText android:id="@+id/numberEditText" android:hint="@string/number_hint" android:layout_width="fill_parent"
-		android:layout_height="wrap_content"></EditText>
+	<AutoCompleteTextView android:id="@+id/numberEditText" android:hint="@string/number_hint" android:layout_width="fill_parent"
+		android:layout_height="wrap_content"></AutoCompleteTextView>
 	<EditText android:id="@+id/messageEditText" android:hint="@string/message_hint" android:layout_width="fill_parent"
 		android:layout_height="wrap_content"></EditText>
 	<Button android:id="@+id/send_button" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="@string/send_text"></Button>
