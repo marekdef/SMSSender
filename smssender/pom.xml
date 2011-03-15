@@ -21,12 +21,11 @@
 			<version>0.0.1-SNAPSHOT</version>
 			<type>apklib</type>
 		</dependency>
-		<!-- 
-		 -->
+		<!-- -->
 	</dependencies>
 
 	<build>
-	<plugins>
+		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -47,7 +46,8 @@
 						<avd>2.2-HVGA</avd>
 					</emulator>
 					<deleteConflictingFiles>true</deleteConflictingFiles>
-					<resourceDirectory>src/main/android</resourceDirectory>
+					<assetsDirectory>src/main/android-assets</assetsDirectory>
+					<resourceDirectory>src/main/android-resources</resourceDirectory>
 				</configuration>
 				<version>2.9.0-beta-1</version>
 				<extensions>true</extensions>
