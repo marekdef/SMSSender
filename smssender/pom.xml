@@ -52,30 +52,6 @@
 				<version>2.9.0-beta-1</version>
 				<extensions>true</extensions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.6</version>
-
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<configuration>
-							<target>
-								<property name="source"
-									value="${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}" />
-								<property name="destination"
-									value="${project.build.directory}/classes/${project.name}.apk" />
-								<delete file="${destination}" />
-								<copy file="${source}" tofile="${destination}" />
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 </project>
