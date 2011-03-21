@@ -39,7 +39,6 @@ public class DetailedTimePicker extends LinearLayout {
 	private static final OnTimeChangedListener NO_OP_CHANGE_LISTENER = new OnTimeChangedListener() {
 		public void onTimeChanged(DetailedTimePicker view, int hourOfDay,
 				int minute, int second) {
-			System.out.println("");
 			Log.d(TAG, "DetailedTimePicker.OnTimeChangedListener.onTimeChanged()");
 		}
 	};
