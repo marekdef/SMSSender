@@ -68,7 +68,6 @@ public class ScheduledSmsList extends Activity implements OnClickListener {
 		String[] PROJECTION = new String[]{
 
 		ContactsContract.Contacts._ID,
-
 		ContactsContract.Contacts.DISPLAY_NAME,
 
 		ContactsContract.Contacts.HAS_PHONE_NUMBER,
