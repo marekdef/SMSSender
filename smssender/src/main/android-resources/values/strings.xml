@@ -5,4 +5,5 @@
     <string name="number_hint">Number</string>
     <string name="message_hint">message</string>
     <string name="send_text">Sent</string>
+    <string name="new_sms">New sms</string>
 </resources>
