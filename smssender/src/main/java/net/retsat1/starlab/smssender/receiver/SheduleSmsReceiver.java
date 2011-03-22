@@ -3,7 +3,6 @@ package net.retsat1.starlab.smssender.receiver;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.retsat1.starlab.smssender.dto.SmsMessage;
-
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;

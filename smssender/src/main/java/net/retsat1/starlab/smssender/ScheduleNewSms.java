@@ -1,6 +1,6 @@
 package net.retsat1.starlab.smssender;
 
-import net.retsat1.starlab.smssender.dto.SmsMessage;
+import net.retsat1.starlab.smssender.service.SendingService;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -23,11 +23,13 @@ public class ScheduleNewSms extends Activity {
 
 	private Button sendButton;
 
-	private DatePicker dataPicker;
+	private DatePicker datePicker;
 
 	private AutoCompleteTextView numberEditText;
 
 	private EditText messageEditText;
+
+	private PendingIntent pendingIntent;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +38,7 @@ public class ScheduleNewSms extends Activity {
 
 		setContentView(R.layout.schedule);
 
-		dataPicker = (DatePicker) findViewById(R.id.dataPicker);
+		datePicker = (DatePicker) findViewById(R.id.dataPicker);
 		numberEditText = (AutoCompleteTextView) findViewById(R.id.numberEditText);
 		messageEditText = (EditText) findViewById(R.id.messageEditText);
 		sendButton = (Button) findViewById(R.id.send_button);
@@ -51,6 +53,9 @@ public class ScheduleNewSms extends Activity {
 		});
 
 		setAdapterForNumberEditor();
+
+		pendingIntent = PendingIntent.getService(this, 0, new Intent(this,
+				SendingService.class), 0);
 	}
 
 	private void setAdapterForNumberEditor() {
@@ -58,10 +63,8 @@ public class ScheduleNewSms extends Activity {
 		String SELECTION = ContactsContract.Contacts.HAS_PHONE_NUMBER + "='1'";
 		String[] PROJECTION = new String[] {
 
-		ContactsContract.Contacts._ID,
-		ContactsContract.Contacts.DISPLAY_NAME,
-		ContactsContract.Contacts.HAS_PHONE_NUMBER,
-		};
+		ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME,
+				ContactsContract.Contacts.HAS_PHONE_NUMBER, };
 
 		Cursor cursor = content.query(ContactsContract.Contacts.CONTENT_URI,
 				PROJECTION, SELECTION, null, null);
@@ -77,7 +80,7 @@ public class ScheduleNewSms extends Activity {
 		}
 
 		if (cursor == null) {
-			Log.e(TAG, "No contacts to display");
+			Log.w(TAG, "No contacts to display");
 		} else {
 			String[] columns = new String[] {
 					ContactsContract.Contacts.DISPLAY_NAME,
@@ -93,26 +96,12 @@ public class ScheduleNewSms extends Activity {
 		}
 
 	}
-	
-	int i = 0;
 
 	private void sendMessage(long currentTimeMillis, String number,
 			String message) {
-		Intent intent = new Intent(this,
-				net.retsat1.starlab.smssender.receiver.SheduleSmsReceiver.class);
-		intent.putExtra(SmsMessage.SENDER, "ja");
-		intent.putExtra(SmsMessage.DATA, currentTimeMillis + "");
-		intent.putExtra(SmsMessage.RECEIVER, number);
-		intent.putExtra(SmsMessage.MESSAGE, message);
-		i++;// TODO generate Id for sms - if smsId is this same we overwrite
-			// sms.
-		PendingIntent sender = PendingIntent.getBroadcast(this, 192837 + i,
-				intent, PendingIntent.FLAG_ONE_SHOT);
-
 		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-		alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
-				+ (5 * 1000), sender);
-
+		alarmManager.set(AlarmManager.ELAPSED_REALTIME,
+				currentTimeMillis + 10000, pendingIntent);
 	}
 
 }

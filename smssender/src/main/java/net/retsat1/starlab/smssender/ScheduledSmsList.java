@@ -1,6 +1,5 @@
 package net.retsat1.starlab.smssender;
 
-import net.retsat1.starlab.smssender.dto.SmsMessage;
 import net.retsat1.starlab.smssender.ui.adapter.SmsListAdapter;
 import android.app.Activity;
 import android.content.Intent;
@@ -8,8 +7,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ListView;
 
 public class ScheduledSmsList extends Activity {
