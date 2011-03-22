@@ -100,7 +100,7 @@ public class ScheduleNewSms extends Activity {
 	private void sendMessage(long currentTimeMillis, String number,
 			String message) {
 		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-		alarmManager.set(AlarmManager.ELAPSED_REALTIME,
+		alarmManager.set(AlarmManager.RTC_WAKEUP,
 				currentTimeMillis + 10000, pendingIntent);
 	}
 
