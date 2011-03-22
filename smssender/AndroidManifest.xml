@@ -16,6 +16,7 @@
 		<provider android:name=".providers.SheduleSmsContentProvider"
 			android:authorities="net.retsat1.starlab.smssender.providers.SheduleSmsContentProvider" />
 		<activity android:name="ScheduleNewSms"></activity>
+		<service android:name=".service.SendingService"></service>
 		  
 			
 	</application>
