@@ -13,6 +13,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+/**
+ * A view for selecting a time with seconds
+ *  
+ */
 public  class DetailedTimePicker extends LinearLayout implements OnChangedListener {
 	private static final String TAG = DetailedTimePicker.class.getSimpleName();
 	/**
