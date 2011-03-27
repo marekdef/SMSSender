@@ -25,17 +25,20 @@ public class SheduleSmsContentProvider extends ContentProvider {
 
 	private static final int DATABASE_VERSION = 1;
 
-	public static final String AUTHORITY = "net.retsat1.starlab.smssender.providers.SheduleSmsContentProvider";
+	
 
+	public static final String PROVIDER_NAME="net.retsat1.starlab.smssender.providers.SheduleSmsContentProvider";
+	public static final Uri CONTENT_URI = Uri.parse("content://"+ PROVIDER_NAME + "/sms");
+	
 	private static final UriMatcher sUriMatcher;
 
-	private static final String SMS_TABLE_NAME = "SMS_TABLE";
+	private static final String SMS_TABLE_NAME = "sms";
 
 	private static final int SMS_CODE = 1;
 	private static final Map<String, String> notesProjectionMap;
 	static {
 		sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-		sUriMatcher.addURI(AUTHORITY, SMS_TABLE_NAME, SMS_CODE);
+		sUriMatcher.addURI(PROVIDER_NAME, SMS_TABLE_NAME, SMS_CODE);
 
 		notesProjectionMap = new HashMap<String, String>();
 
@@ -172,3 +175,4 @@ public class SheduleSmsContentProvider extends ContentProvider {
 	}
 
 }
+
