@@ -51,6 +51,7 @@ public class SmsMessage {
 	public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.marek.sms.row";
 	public static final Uri CONTENT_URI  = Uri.parse("content://"
 			 + SheduleSmsContentProvider.PROVIDER_NAME + "/sms");
+	public static final String DELIVERY_DATE = "DELIVERY_DATE";
 	public String sender;
 	public String number;
 	public String message;

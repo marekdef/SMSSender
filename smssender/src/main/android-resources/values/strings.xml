@@ -8,4 +8,5 @@
     <string name="status_not_sent">Not sent</string>
     <string name="delete_all_checked">Delete all checked</string>
     <string name="select_all">select all</string>
+    <string name="this_sms_is_paid">This SMS is paid. Bay paid version of application to send paid sms</string>
 </resources>

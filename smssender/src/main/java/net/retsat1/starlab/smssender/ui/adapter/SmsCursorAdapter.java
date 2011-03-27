@@ -1,18 +1,12 @@
 package net.retsat1.starlab.smssender.ui.adapter;
 
-import java.awt.Checkbox;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.retsat1.starlab.smssender.R;
 import net.retsat1.starlab.smssender.dto.SmsMessage;
-import net.retsat1.starlab.smssender.providers.SheduleSmsContentProvider;
-
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +21,7 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
 	private static final String TAG = "SmsCursorAdapter";
 	private Cursor c;
 	private Context context;
-	private Set<Integer> checkList = new HashSet<Integer>();
+	private ConcurrentLinkedQueue<Integer> checkList = new ConcurrentLinkedQueue<Integer>();
 	
 	public SmsCursorAdapter(Context context, int layout, Cursor c,
 			String[] from, int[] to) {
@@ -38,7 +32,7 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
 	}
 	
 	@Override
-	public View newView(Context context, Cursor cursor, ViewGroup parent) {
+	public synchronized View newView(Context context, Cursor cursor, ViewGroup parent) {
 		LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v =  li.inflate(R.layout.list_item, parent, false);
 		CheckBox cb =  (CheckBox) v.findViewById(R.id.checked);
@@ -59,20 +53,20 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-//		View v = convertView;
-//		if (v == null) {
-//			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//			v = inflater.inflate(R.layout.list_item, null);
-//		}
-//        this.c.moveToPosition(position);
-//        Integer i = Integer.parseInt(this.c.getString(this.c.getColumnIndex(SmsMessage.SMS_ID)));
-//        Log.d(TAG, "IDID = " + i);
-//		CheckBox cBox = (CheckBox) v.findViewById(R.id.checked);
-//		cBox.setTag(i);
-//		cBox.setOnCheckedChangeListener(this);
-//		boolean b= checkList.contains(i);
-//		cBox.setChecked(b);
-//		Log.d(TAG, "position " + position);
+		View v = convertView;
+		if (v == null) {
+			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			v = inflater.inflate(R.layout.list_item, null);
+		}
+        this.c.moveToPosition(position);
+        Integer i = this.c.getInt(this.c.getColumnIndex(SmsMessage.SMS_ID));
+        Log.d(TAG, "IDID = " + i);
+		CheckBox cBox = (CheckBox) v.findViewById(R.id.checked);
+		cBox.setTag(i);
+		cBox.setOnCheckedChangeListener(this);
+		boolean b= checkList.contains(i);
+		cBox.setChecked(b);
+		Log.d(TAG, "position " + position);
 		return super.getView(position, convertView, parent);
 	}
 	
@@ -89,7 +83,8 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
 				checkList.remove(id);
 			}
 		}
-		
+		notifyDataSetInvalidated();
+		notifyDataSetChanged();
 	}
 
 	@Override
@@ -104,12 +99,14 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
 	}
 
 	public void selectAllItems() {
-		c.moveToFirst();
-	    do{
-	        Integer id =c.getInt(c.getColumnIndex(SmsMessage.SMS_ID)); //crashes here
-	        checkList.add(id);
-	    }while(c.moveToNext());
-		notifyDataSetInvalidated();
-		notifyDataSetChanged();
+		if (getCount()>0){
+			c.moveToFirst();
+		    do{
+		        Integer id =c.getInt(c.getColumnIndex(SmsMessage.SMS_ID)); //crashes here
+		        checkList.add(id);
+		    }while(c.moveToNext());
+			notifyDataSetInvalidated();
+			notifyDataSetChanged();
+		}
 	}
 }
