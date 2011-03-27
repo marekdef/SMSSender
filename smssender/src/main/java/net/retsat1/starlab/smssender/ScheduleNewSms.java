@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import net.retsat1.starlab.smssender.dto.SmsMessage;
-import net.retsat1.starlab.android.timepicker.DetailedTimePicker;
 import net.retsat1.starlab.smssender.service.SendingService;
 import net.retsat1.starlab.android.timepicker.DetailedTimePicker;
 
@@ -36,17 +35,13 @@ public class ScheduleNewSms extends Activity {
 
 	private DatePicker datePicker;
 	
-	private DetailedTimePicker detailedTimePicker;
+	private DetailedTimePicker timePicker;
 
 	private AutoCompleteTextView numberEditText;
 
 	private EditText messageEditText;
-
-<<<<<<< HEAD
-=======
+	
 	private PendingIntent pendingIntent;
-
-	private DetailedTimePicker timePicker;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +121,7 @@ public class ScheduleNewSms extends Activity {
 		Log.d(TAG, "mm: " + timePicker.getCurrentMinute());
 		Log.d(TAG, "ss: " + timePicker.getCurrentSecond());
 		Date d =new Date(datePicker.getYear()-1900, datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute(), timePicker.getCurrentSecond());
+		
 		Calendar c = GregorianCalendar.getInstance();
 		c.set(Calendar.YEAR, datePicker.getYear());
 		c.set(Calendar.MONTH, datePicker.getMonth());
