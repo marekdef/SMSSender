@@ -3,6 +3,8 @@ package net.retsat1.starlab.android.timepicker;
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
 
+import net.retsat1.starlab.android.timepicker.NumberPicker.OnChangedListener;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -11,7 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-public class DetailedTimePicker extends LinearLayout {
+public  class DetailedTimePicker extends LinearLayout implements OnChangedListener {
 	private static final String TAG = DetailedTimePicker.class.getSimpleName();
 	/**
 	 * The callback interface used to indicate the time has been adjusted.
@@ -39,7 +41,9 @@ public class DetailedTimePicker extends LinearLayout {
 	private static final OnTimeChangedListener NO_OP_CHANGE_LISTENER = new OnTimeChangedListener() {
 		public void onTimeChanged(DetailedTimePicker view, int hourOfDay,
 				int minute, int second) {
-			Log.d(TAG, "DetailedTimePicker.OnTimeChangedListener.onTimeChanged()");
+			Log.d(TAG, "DetailedTimePicker.OnTimeChangedListener.onTimeChanged() hourOfDay " + hourOfDay +  " minute " + minute + " second " + second);
+			
+			
 		}
 	};
 
@@ -48,7 +52,7 @@ public class DetailedTimePicker extends LinearLayout {
 	private int mCurrentMinute = 0; // 0-59
 	private int mCurrentSecond = 0; // 0-59
 
-	private boolean mIs24HourView = false;
+	private boolean mIs24HourView = true;
 
 	private boolean mIsAm;
 	// ui components
@@ -78,7 +82,10 @@ public class DetailedTimePicker extends LinearLayout {
 		mHourPicker = (NumberPicker) findViewById(R.id.hour);
 		mMinutePicker = (NumberPicker) findViewById(R.id.minute);
 		mSecondPicker = (NumberPicker) findViewById(R.id.second);
-
+		mHourPicker.setOnChangeListener(this);
+		mMinutePicker.setOnChangeListener(this);
+		mSecondPicker.setOnChangeListener(this);
+		
 		mAmPmButton = (Button) findViewById(R.id.amPm);
 
 		configurePickerRanges();
@@ -155,11 +162,12 @@ public class DetailedTimePicker extends LinearLayout {
 		return mCurrentMinute;
 	}
 
-	private int getCurrentSecond() {
+	public int getCurrentSecond() {
 		return mCurrentSecond;
 	}
 
 	private void onTimeChanged() {
+		Log.d(TAG, "mOnTimeChangedListener " + mOnTimeChangedListener);
 		if (mOnTimeChangedListener != null) {
 			mOnTimeChangedListener.onTimeChanged(this, getCurrentHour(),
 					getCurrentMinute(), getCurrentSecond());
@@ -224,8 +232,7 @@ public class DetailedTimePicker extends LinearLayout {
 	 */
 	private void updateMinuteDisplay() {
 		mMinutePicker.setCurrent(mCurrentMinute);
-		mOnTimeChangedListener.onTimeChanged(this, getCurrentHour(),
-				getCurrentMinute(), getCurrentSecond());
+		onTimeChanged();
 	}
 
 	/**
@@ -233,8 +240,26 @@ public class DetailedTimePicker extends LinearLayout {
 	 */
 	private void updateSecondDisplay() {
 		mSecondPicker.setCurrent(mCurrentSecond);
-		mOnTimeChangedListener.onTimeChanged(this, getCurrentHour(),
-				getCurrentMinute(), getCurrentSecond());
+		onTimeChanged();
 	}
 
+	@Override
+	public void onChanged(NumberPicker picker, int oldVal, int newVal) {
+		Log.d(TAG, "picker " +  picker.getId());
+		switch (picker.getId()) {
+			case R.id.hour :
+				setCurrentHour(newVal);
+				break;
+			case R.id.minute :
+				setCurrentMinute(newVal);
+				break;
+			case R.id.second :
+				setCurrentSecond(newVal);
+				break;	
+			default :
+				throw new IllegalStateException();
+		}
+	}
+
+	
 }
