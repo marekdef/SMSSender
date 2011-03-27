@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="horizontal" android:layout_width="fill_parent"
-	android:layout_height="fill_parent" >
-	<CheckBox android:id="@+id/send_check_box" android:checked="true" android:layout_width="wrap_content"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="horizontal"
+	>
+
+	<CheckBox android:id="@+id/checked" android:checked="true"
+		android:paddingRight="2px" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" />
-	<Chronometer  android:format="H:MM:SS" android:id="@+id/how_long_chronometer"
-		android:layout_width="wrap_content" android:layout_height="wrap_content" />
 	<LinearLayout android:orientation="vertical"
-		android:layout_width="fill_parent" android:layout_height="wrap_content">
-		<TextView android:id="@+id/numberText" android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:padding="10dp"
-			android:textSize="16sp">
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<TextView android:id="@+id/stat" android:text="@string/status_not_sent"
+			android:paddingRight="2px" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" />
+		<TextView android:id="@+id/stat" android:text="fwejifew"
+			android:paddingRight="2px" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" />
+	</LinearLayout>
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<TextView android:id="@+id/numberText" android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
 		</TextView>
-		<TextView android:id="@+id/messageText" android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:padding="10dp"
-			android:textSize="16sp">
-		</TextView>
+		<TextView android:id="@+id/messageText" android:ellipsize="start"
+			android:maxLines="1" android:layout_width="wrap_content"
+			android:layout_height="wrap_content"></TextView>
 	</LinearLayout>
 </LinearLayout>

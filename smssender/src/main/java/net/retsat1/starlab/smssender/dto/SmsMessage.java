@@ -1,14 +1,51 @@
 package net.retsat1.starlab.smssender.dto;
 
 import net.retsat1.starlab.smssender.providers.SheduleSmsContentProvider;
+import net.retsat1.starlab.smssender.receiver.SmsStatusSendReceiver;
+import android.app.Activity;
 import android.net.Uri;
+import android.telephony.SmsManager;
 
 public class SmsMessage {
-	//intent 
-	public static final String SENDER = "SENDER";
+	//intent and db columns names 
+	public static final String SENDER = "SENDER"; //TODO I don't know if we need keep sender filed, because it will be always this same phone
 	public static final String RECEIVER = "RECEIVER";
 	public static final String MESSAGE = "MESSAGE";
-	public static final String DATA = "DATA";
+	public static final String DATA = "DATA";	
+	/**
+	 * List of state you can find in 
+	 * {@link SmsStatusSendReceiver#getResultCode()}
+	 * <ul>
+	 * <li>SmsMessage.UNSENT = -2</li>
+	 * <li>Activity.RESULT_OK = -1</li>
+	 * <li>SmsManager.RESULT_ERROR_GENERIC_FAILURE = 1</li>
+	 * <li>SmsManager.RESULT_ERROR_NO_SERVICE = 4</li>
+	 * <li>SmsManager.RESULT_ERROR_NULL_PDU = 3</li>
+	 * <li>SmsManager.RESULT_ERROR_RADIO_OFF = 2</li>
+	 * </ul>
+	 */
+	public static final String MESSAGE_STATUS = "MESSAGE_STATUS"; // -2 not sent yet
+	public static final int UNSENT = -2;
+	/**
+	 * List of state you can find in 
+	 * {@link SmsStatusDeliveredReceiver}
+	 * <ul>
+	 * <li>Activity.RESULT_OK = -1</li>
+	 * <li>SmsManager.RESULT_ERROR_GENERIC_FAILURE = 1</li>
+	 * </ul>
+	 */
+	public static final String DELIVERY_STATUS = "DELIVERY_STATUS"; // send, received, supplied
+	
+	/**
+	 * Column name for database. Store time when user set sms.
+	 */
+	public static final String SETUP_DATE = "SETUP_DATE";
+	/**
+	 * Column name for database. Store time last sms status.
+	 */
+	public static final String STATUS_DATE = "STATUS_DATE";
+	
+	
 	//database
 	public static final String SMS_ID = "_id";
 	public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.marek.sms.row";
@@ -17,7 +54,8 @@ public class SmsMessage {
 	public String sender;
 	public String number;
 	public String message;
-	public long data;
+	public long dateOfSetup;
+	public long dateOfStatus;
 	
 	public SmsMessage() {
 	}
@@ -46,10 +84,6 @@ public class SmsMessage {
 	@Override
 	public String toString() {
 		return "SmsMessage [sender=" + sender + ", receiver=" + number
-				+ ", message=" + message + ", data=" + data + "]";
-	}
-	
-	
-	
-	
+				+ ", message=" + message + ", data=" + dateOfSetup + "]";
+	}	
 }

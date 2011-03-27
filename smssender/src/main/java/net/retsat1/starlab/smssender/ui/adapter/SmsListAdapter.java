@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.Chronometer;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 public class SmsListAdapter extends ArrayAdapter<SmsMessage> {
@@ -26,7 +28,7 @@ public class SmsListAdapter extends ArrayAdapter<SmsMessage> {
 		public TextView  number;
 		public TextView message;
 		public Chronometer timeToGo;
-		public CheckBox toSent;
+		public CheckBox checked;
 	}
 
 	@Override
@@ -43,8 +45,9 @@ public class SmsListAdapter extends ArrayAdapter<SmsMessage> {
 			LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			rowView = inflater.inflate(R.layout.list_item, null, true);
 			holder = new ViewHolder();
-			holder.toSent = (CheckBox) rowView.findViewById(R.id.send_check_box);
-			holder.timeToGo = (Chronometer) rowView.findViewById(R.id.how_long_chronometer);
+			holder.checked = (CheckBox) rowView.findViewById(R.id.checked);
+		
+			//holder.timeToGo = (Chronometer) rowView.findViewById(R.id.how_long_chronometer);
 			holder.number = (TextView) rowView.findViewById(R.id.numberText);
 			holder.message = (TextView) rowView.findViewById(R.id.messageText);
 			rowView.setTag(holder);
@@ -54,9 +57,12 @@ public class SmsListAdapter extends ArrayAdapter<SmsMessage> {
 		SmsMessage item = getItem(position);
 		holder.number.setText(item.getReceiver());
 		holder.message.setText(item.getMessage());
-		holder.toSent.setChecked(true);
+		if (holder.checked.isChecked()){
+			holder.number.setText("c");
+		}else{
+			holder.number.setText("nc");
+		}
 		return rowView;
 	}
-
 	
 }

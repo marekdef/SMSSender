@@ -107,14 +107,17 @@ public class ScheduleNewSms extends Activity {
         calendar.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute(),
                 timePicker.getCurrentSecond());
 
-        Log.d(TAG, "Data when" + currentTimeMillis + " c=" + calendar.getTimeInMillis());
+        Log.d(TAG, "Data when c=" + calendar.getTimeInMillis());
         
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         
         ContentValues values = new ContentValues();
-        values.put(SmsMessage.MESSAGE, "ASP.NET 2.0: A Developer's Notebook");
-        values.put(SmsMessage.RECEIVER, "0596008120");
+        values.put(SmsMessage.MESSAGE, message);
+        values.put(SmsMessage.RECEIVER, number);
+        values.put(SmsMessage.SETUP_DATE, System.currentTimeMillis());
+        values.put(SmsMessage.MESSAGE_STATUS, 0);
+        values.put(SmsMessage.DELIVERY_STATUS, 0);
         
         getContentResolver().insert(SmsMessage.CONTENT_URI, values);
     }
