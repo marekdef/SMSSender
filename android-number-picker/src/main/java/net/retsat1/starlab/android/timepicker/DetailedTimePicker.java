@@ -2,6 +2,7 @@ package net.retsat1.starlab.android.timepicker;
 
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import net.retsat1.starlab.android.timepicker.NumberPicker.OnChangedListener;
 
@@ -91,7 +92,7 @@ public  class DetailedTimePicker extends LinearLayout implements OnChangedListen
 		configurePickerRanges();
 
 		// initialize to current time
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 		setOnTimeChangedListener(NO_OP_CHANGE_LISTENER);
 
 		// by default we're not in 24 hour mode
@@ -132,6 +133,8 @@ public  class DetailedTimePicker extends LinearLayout implements OnChangedListen
 		if (!isEnabled()) {
 			setEnabled(false);
 		}
+		mMinutePicker.changeCurrent(mMinutePicker.getCurrent()+1);//add one minute 
+		mSecondPicker.changeCurrent(0); //set 0 second by default
 	}
 
 	private void configurePickerRanges() {
