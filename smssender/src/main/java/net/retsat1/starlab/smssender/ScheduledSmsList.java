@@ -1,6 +1,7 @@
 package net.retsat1.starlab.smssender;
 
 import net.retsat1.starlab.smssender.dto.SmsMessage;
+import net.retsat1.starlab.smssender.ui.adapter.SmsCursorAdapter;
 import net.retsat1.starlab.smssender.ui.adapter.SmsListAdapter;
 import android.app.Activity;
 import android.content.Context;
@@ -14,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
@@ -21,10 +23,7 @@ public class ScheduledSmsList extends Activity {
 	private static final String TAG = ScheduledSmsList.class.getSimpleName();
 
 	private ListView smsListView;
-
-	private SmsListAdapter smsListAdapter;
-
-	private SimpleCursorAdapter adapter;
+	private SmsCursorAdapter adapter;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -34,9 +33,9 @@ public class ScheduledSmsList extends Activity {
 		Cursor c = managedQuery(SmsMessage.CONTENT_URI, null, null, null, null);
 		String[] valuePosition = {SmsMessage.RECEIVER, SmsMessage.MESSAGE};
 		int[] uiPosition = {R.id.numberText, R.id.messageText};
-		adapter = new SimpleCursorAdapter(this,R.layout.list_item,c, valuePosition, uiPosition);
+		adapter = new SmsCursorAdapter(this,R.layout.list_item,c, valuePosition, uiPosition);
 		smsListView.setAdapter(adapter);
-		
+	
 	}
 
 	
@@ -53,6 +52,13 @@ public class ScheduledSmsList extends Activity {
 		case R.id.new_sms:
 			startActivity(new Intent(this, ScheduleNewSms.class));
 			return true;
+		case R.id.delete_checked:
+			adapter.deleteAllCheckedItems();
+			return true;
+		case R.id.select_all:
+			adapter.selectAllItems();
+			return true;
+
 		}
 		return super.onMenuItemSelected(featureId, item);
 	}

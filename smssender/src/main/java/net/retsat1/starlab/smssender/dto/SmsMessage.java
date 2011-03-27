@@ -25,7 +25,7 @@ public class SmsMessage {
 	 * </ul>
 	 */
 	public static final String MESSAGE_STATUS = "MESSAGE_STATUS"; // -2 not sent yet
-	public static final int UNSENT = -2;
+	public static final int STATUS_UNSENT = -2;
 	/**
 	 * List of state you can find in 
 	 * {@link SmsStatusDeliveredReceiver}

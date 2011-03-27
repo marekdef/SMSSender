@@ -123,10 +123,10 @@ public class ScheduleNewSms extends Activity {
         values.put(SmsMessage.MESSAGE, message);
         values.put(SmsMessage.RECEIVER, number);
 
+        values.put(SmsMessage.MESSAGE_STATUS, SmsMessage.STATUS_UNSENT);
         values.put(SmsMessage.SETUP_DATE, System.currentTimeMillis());
-        values.put(SmsMessage.MESSAGE_STATUS, 0);
-        values.put(SmsMessage.DELIVERY_STATUS, 0);
-        
+        values.put(SmsMessage.DELIVERY_STATUS, SmsMessage.STATUS_UNSENT);
+        values.put(SmsMessage.STATUS_DATE, 0);        
         getContentResolver().insert(SmsMessage.CONTENT_URI, values);
     }
 

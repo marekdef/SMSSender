@@ -23,7 +23,7 @@ public class SheduleSmsContentProvider extends ContentProvider {
 
 	private static final String DATABASE_NAME = "smsshedule.db";
 
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 3;
 
 	
 
@@ -45,7 +45,11 @@ public class SheduleSmsContentProvider extends ContentProvider {
 		notesProjectionMap.put(SmsMessage.SMS_ID, SmsMessage.SMS_ID);
 		notesProjectionMap.put(SmsMessage.RECEIVER, SmsMessage.RECEIVER);
 		notesProjectionMap.put(SmsMessage.MESSAGE, SmsMessage.MESSAGE);
-
+		notesProjectionMap.put(SmsMessage.MESSAGE_STATUS, SmsMessage.MESSAGE_STATUS);
+		notesProjectionMap.put(SmsMessage.DELIVERY_STATUS, SmsMessage.DELIVERY_STATUS);
+		notesProjectionMap.put(SmsMessage.STATUS_DATE, SmsMessage.STATUS_DATE);
+		notesProjectionMap.put(SmsMessage.SETUP_DATE, SmsMessage.SETUP_DATE);
+			
 	}
 
 	private static class DatabaseHelper extends SQLiteOpenHelper {
@@ -57,17 +61,23 @@ public class SheduleSmsContentProvider extends ContentProvider {
 
 		@Override
 		public void onCreate(SQLiteDatabase database) {
+			Log.d(TAG, "onCreate database");
 			database.execSQL("CREATE TABLE " + SMS_TABLE_NAME + " ("
 					+ SmsMessage.SMS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-					+ SmsMessage.RECEIVER + " VARCHAR(255),"
-					+ SmsMessage.MESSAGE + " LONGTEXT" + ");");
+					+ SmsMessage.RECEIVER + " VARCHAR(255)," 
+					+ SmsMessage.MESSAGE + " LONGTEXT," 
+					+ SmsMessage.MESSAGE_STATUS + " INTEGER," 
+					+ SmsMessage.DELIVERY_STATUS + " INTEGER," 
+					+ SmsMessage.SETUP_DATE + " INTEGER," 
+					+ SmsMessage.STATUS_DATE + " INTEGER" 
+			+ ");");
 		}
 
 		@Override
 		public void onUpgrade(SQLiteDatabase database, int oldVersion,
 				int newVersion) {
 			Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
-					+ newVersion + ", which will destroy all old data");
+					+ newVersion + ", which will destroy all old data " + database.isReadOnly() + " open=" + database.isOpen());
 			database.execSQL("DROP TABLE IF EXISTS " + SMS_TABLE_NAME);
 			onCreate(database);
 		}
