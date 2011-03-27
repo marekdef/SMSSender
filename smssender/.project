@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>AndroidNumberPicker</name>
+	<name>smssender</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -22,7 +22,17 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
 	<linkedResources>
-	<link>
+		<link>
+			<name>android-number-picker_src_main_java</name>
+			<type>2</type>
+			<locationURI>_android_android_number_picker_35ff3cb4/src/main/java</locationURI>
+		</link>
+		<link>
+			<name>assets</name>
+			<type>2</type>
+			<locationURI>PROJECT_LOC/src/main/android-assets</locationURI>
+		</link>
+		<link>
 			<name>gen</name>
 			<type>2</type>
 			<locationURI>PROJECT_LOC/target/generated-sources/r</locationURI>
@@ -31,11 +41,6 @@
 			<name>res</name>
 			<type>2</type>
 			<locationURI>PROJECT_LOC/src/main/android-resources</locationURI>
-		</link>
-		<link>
-			<name>assets</name>
-			<type>2</type>
-			<locationURI>PROJECT_LOC/src/main/android-assets</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
