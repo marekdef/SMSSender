@@ -5,11 +5,13 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import net.retsat1.starlab.android.timepicker.DetailedTimePicker;
+import net.retsat1.starlab.smssender.dto.SmsMessage;
 import net.retsat1.starlab.smssender.service.SendingService;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -116,7 +118,6 @@ public class ScheduleNewSms extends Activity {
 		Log.d(TAG, "hh: " + timePicker.getCurrentHour());
 		Log.d(TAG, "mm: " + timePicker.getCurrentMinute());
 		Log.d(TAG, "ss: " + timePicker.getCurrentSecond());
-		Date d =new Date(datePicker.getYear()-1900, datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute(), timePicker.getCurrentSecond());
 		Calendar c = GregorianCalendar.getInstance();
 		c.set(Calendar.YEAR, datePicker.getYear());
 		c.set(Calendar.MONTH, datePicker.getMonth());
@@ -126,10 +127,15 @@ public class ScheduleNewSms extends Activity {
 		c.set(Calendar.MINUTE, timePicker.getCurrentMinute());
 		c.set(Calendar.SECOND, timePicker.getCurrentSecond());
 		c.set(Calendar.MILLISECOND, 0);
-		Log.d(TAG, " data  " + d.getTime() + " curren " + currentTimeMillis + " c="+c.getTimeInMillis());
+		Log.d(TAG, " data   current " + currentTimeMillis + " c="+c.getTimeInMillis());
 		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 		alarmManager.set(AlarmManager.RTC_WAKEUP,
 				c.getTimeInMillis(), pendingIntent);
+		ContentValues values = new ContentValues();
+		 values.put(SmsMessage.MESSAGE, "ASP.NET 2.0: A Developer's Notebook");
+		   values.put(SmsMessage.RECEIVER, "0596008120");        
+		getContentResolver().insert(SmsMessage.CONTENT_URI, values );
+		
 	}
 
 }

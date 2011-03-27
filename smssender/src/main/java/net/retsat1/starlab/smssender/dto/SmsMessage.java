@@ -13,7 +13,7 @@ public class SmsMessage {
 	public static final String SMS_ID = "_id";
 	public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.marek.sms.row";
 	public static final Uri CONTENT_URI  = Uri.parse("content://"
-			 + SheduleSmsContentProvider.AUTHORITY + "/sms");
+			 + SheduleSmsContentProvider.PROVIDER_NAME + "/sms");
 	public String sender;
 	public String number;
 	public String message;
