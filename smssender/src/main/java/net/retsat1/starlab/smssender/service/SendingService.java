@@ -12,6 +12,11 @@ import android.util.Log;
 public class SendingService extends Service {
 	private static final String TAG = SendingService.class.getSimpleName();
 	private NotificationManager notificationManager;
+	
+	@Override
+	public void onStart(Intent intent, int startId) {
+	    super.onStart(intent, startId);
+	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
