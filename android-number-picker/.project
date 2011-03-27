@@ -30,7 +30,12 @@
 		<link>
 			<name>res</name>
 			<type>2</type>
-			<locationURI>PROJECT_LOC/src/main/resources</locationURI>
+			<locationURI>PROJECT_LOC/src/main/android-resources</locationURI>
+		</link>
+		<link>
+			<name>assets</name>
+			<type>2</type>
+			<locationURI>PROJECT_LOC/src/main/android-assets</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

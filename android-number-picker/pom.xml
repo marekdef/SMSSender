@@ -28,7 +28,8 @@
 						<avd>2.2-HVGA</avd>
 					</emulator>
 					<deleteConflictingFiles>true</deleteConflictingFiles>
-					<resourceDirectory>src/main/android</resourceDirectory>
+					<assetsDirectory>/main/android-assets</assetsDirectory>
+					<resourceDirectory>src/main/android-resources</resourceDirectory>
 				</configuration>
 				<version>2.9.0-beta-1</version>
 				<extensions>true</extensions>

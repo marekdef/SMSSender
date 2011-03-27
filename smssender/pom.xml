@@ -21,13 +21,11 @@
 			<version>0.0.1-SNAPSHOT</version>
 			<type>apklib</type>
 		</dependency>
-		<!-- 
-		 -->
+		<!-- -->
 	</dependencies>
 
 	<build>
-	<sourceDirectory>src</sourceDirectory>				
-	<plugins>
+		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -48,35 +46,12 @@
 						<avd>2.2-HVGA</avd>
 					</emulator>
 					<deleteConflictingFiles>true</deleteConflictingFiles>
-					<resourceDirectory>res</resourceDirectory>
-					<genDirectory>gen</genDirectory>
+
+					<assetsDirectory>src/main/android-assets</assetsDirectory>
+					<resourceDirectory>src/main/android-resources</resourceDirectory>
 				</configuration>
 				<version>2.9.0-beta-1</version>
 				<extensions>true</extensions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.6</version>
-
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<configuration>
-							<target>
-								<property name="source"
-									value="${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}" />
-								<property name="destination"
-									value="${project.build.directory}/classes/${project.name}.apk" />
-								<delete file="${destination}" />
-								<copy file="${source}" tofile="${destination}" />
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
