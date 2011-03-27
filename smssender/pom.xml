@@ -46,7 +46,6 @@
 						<avd>2.2-HVGA</avd>
 					</emulator>
 					<deleteConflictingFiles>true</deleteConflictingFiles>
-
 					<assetsDirectory>src/main/android-assets</assetsDirectory>
 					<resourceDirectory>src/main/android-resources</resourceDirectory>
 				</configuration>
