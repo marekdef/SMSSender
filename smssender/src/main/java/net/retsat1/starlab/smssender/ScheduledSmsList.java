@@ -28,6 +28,7 @@ public class ScheduledSmsList extends Activity {
 //		smsListView.setAdapter(smsListAdapter);
 		
 	}
+
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

@@ -1,6 +1,13 @@
 package net.retsat1.starlab.smssender;
 
+
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 import net.retsat1.starlab.smssender.dto.SmsMessage;
+import net.retsat1.starlab.android.timepicker.DetailedTimePicker;
 import net.retsat1.starlab.smssender.service.SendingService;
 import net.retsat1.starlab.android.timepicker.DetailedTimePicker;
 
@@ -35,6 +42,12 @@ public class ScheduleNewSms extends Activity {
 
 	private EditText messageEditText;
 
+<<<<<<< HEAD
+=======
+	private PendingIntent pendingIntent;
+
+	private DetailedTimePicker timePicker;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -43,7 +56,7 @@ public class ScheduleNewSms extends Activity {
 		setContentView(R.layout.schedule);
 
 		datePicker = (DatePicker) findViewById(R.id.dataPicker);
-		detailedTimePicker = (DetailedTimePicker) (R.id.detailedTimePicker);
+		timePicker = (DetailedTimePicker) findViewById(R.id.detailedTimePicker);
 		numberEditText = (AutoCompleteTextView) findViewById(R.id.numberEditText);
 		messageEditText = (EditText) findViewById(R.id.messageEditText);
 		sendButton = (Button) findViewById(R.id.send_button);
@@ -53,6 +66,7 @@ public class ScheduleNewSms extends Activity {
 			public void onClick(View v) {
 				String number = numberEditText.getText().toString();
 				String message = messageEditText.getText().toString();
+				
 				sendMessage(System.currentTimeMillis(), number, message);
 			}
 		});
@@ -103,18 +117,32 @@ public class ScheduleNewSms extends Activity {
 
 	private void sendMessage(long currentTimeMillis, String number,
 			String message) {
-		Intent intent = new Intent(this, SendingService.class);
-		intent.putExtra(SmsMessage.MESSAGE,message);
-		intent.putExtra(SmsMessage.RECEIVER, (number));
 		
-		datePicker.getDa
-	
-		PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent,
-				PendingIntent.FLAG_ONE_SHOT);
-
+		Log.d(TAG, "sendMessage number " + number  + " message " + message);
+		Log.d(TAG, "year: " + datePicker.getYear());
+		Log.d(TAG, "month: " + datePicker.getMonth());
+		Log.d(TAG, "day: " + datePicker.getDayOfMonth());
+		Log.d(TAG, "hh: " + timePicker.getCurrentHour());
+		Log.d(TAG, "mm: " + timePicker.getCurrentMinute());
+		Log.d(TAG, "ss: " + timePicker.getCurrentSecond());
+		Date d =new Date(datePicker.getYear()-1900, datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute(), timePicker.getCurrentSecond());
+		Calendar c = GregorianCalendar.getInstance();
+		c.set(Calendar.YEAR, datePicker.getYear());
+		c.set(Calendar.MONTH, datePicker.getMonth());
+		c.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
+		
+		c.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
+		c.set(Calendar.MINUTE, timePicker.getCurrentMinute());
+		c.set(Calendar.SECOND, timePicker.getCurrentSecond());
+		c.set(Calendar.MILLISECOND, 0);
+		Log.d(TAG, " data  " + d.getTime() + " curren " + currentTimeMillis + " c="+c.getTimeInMillis());
 		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-		alarmManager.set(AlarmManager.RTC_WAKEUP, currentTimeMillis + 10000,
-				pendingIntent);
+		alarmManager.set(AlarmManager.RTC_WAKEUP,
+				c.getTimeInMillis(), pendingIntent);
 	}
 
 }
+
+
+
+
