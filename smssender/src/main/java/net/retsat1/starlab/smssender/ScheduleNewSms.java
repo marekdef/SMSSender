@@ -5,11 +5,13 @@ import java.util.GregorianCalendar;
 
 import net.retsat1.starlab.android.timepicker.DetailedTimePicker;
 import net.retsat1.starlab.smssender.dto.SmsMessage;
+import net.retsat1.starlab.smssender.service.SendingService;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -34,8 +36,6 @@ public class ScheduleNewSms extends Activity {
     private AutoCompleteTextView numberEditText;
 
     private EditText messageEditText;
-
-    private PendingIntent pendingIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,14 +107,19 @@ public class ScheduleNewSms extends Activity {
         calendar.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute(),
                 timePicker.getCurrentSecond());
 
-        Log.d(TAG, "Data when" + currentTimeMillis + " c=" + calendar.getTimeInMillis());
+        long scheduledTimeMillis = calendar.getTimeInMillis();
+        Log.d(TAG, "Data when" + scheduledTimeMillis);
+        
+        Intent intent = new Intent(this, SendingService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        intent.putExtra(SmsMessage.MESSAGE, message);
         
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, scheduledTimeMillis, pendingIntent);
         
         ContentValues values = new ContentValues();
-        values.put(SmsMessage.MESSAGE, "ASP.NET 2.0: A Developer's Notebook");
-        values.put(SmsMessage.RECEIVER, "0596008120");
+        values.put(SmsMessage.MESSAGE, message);
+        values.put(SmsMessage.RECEIVER, number);
         
         getContentResolver().insert(SmsMessage.CONTENT_URI, values);
     }
