@@ -1,12 +1,18 @@
 package net.retsat1.starlab.smssender;
 
+
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+
 import net.retsat1.starlab.android.timepicker.DetailedTimePicker;
+
 import net.retsat1.starlab.smssender.dto.SmsMessage;
 import net.retsat1.starlab.smssender.service.SendingService;
+import net.retsat1.starlab.android.timepicker.DetailedTimePicker;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -14,6 +20,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.NetworkInfo.DetailedState;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -31,14 +38,14 @@ public class ScheduleNewSms extends Activity {
 	private Button sendButton;
 
 	private DatePicker datePicker;
+	
+	private DetailedTimePicker timePicker;
 
 	private AutoCompleteTextView numberEditText;
 
 	private EditText messageEditText;
-
+	
 	private PendingIntent pendingIntent;
-
-	private DetailedTimePicker timePicker;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +71,6 @@ public class ScheduleNewSms extends Activity {
 		});
 
 		setAdapterForNumberEditor();
-
-		pendingIntent = PendingIntent.getService(this, 0, new Intent(this,
-				SendingService.class), 0);
 	}
 
 	private void setAdapterForNumberEditor() {
@@ -79,20 +83,22 @@ public class ScheduleNewSms extends Activity {
 
 		Cursor cursor = content.query(ContactsContract.Contacts.CONTENT_URI,
 				PROJECTION, SELECTION, null, null);
-		while (cursor.moveToNext()) {
-			String data = cursor.getString(cursor
-					.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-
-			int hasNumber = cursor
-					.getInt(cursor
-							.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-
-			Log.d(TAG, "data " + data + " hasNumber=" + hasNumber);
-		}
 
 		if (cursor == null) {
 			Log.w(TAG, "No contacts to display");
 		} else {
+			while (cursor.moveToNext()) {
+				String data = cursor
+						.getString(cursor
+								.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+
+				int hasNumber = cursor
+						.getInt(cursor
+								.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+
+				Log.d(TAG, "data " + data + " hasNumber=" + hasNumber);
+			}
+
 			String[] columns = new String[] {
 					ContactsContract.Contacts.DISPLAY_NAME,
 					ContactsContract.Contacts.HAS_PHONE_NUMBER };

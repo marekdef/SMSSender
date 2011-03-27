@@ -1,13 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-  <name>smssender</name>
-  <comment>NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
-  <projects/>
-  <buildSpec>
-    <buildCommand>
-      <name>org.eclipse.jdt.core.javabuilder</name>
-    </buildCommand>
-  </buildSpec>
-  <natures>
-    <nature>org.eclipse.jdt.core.javanature</nature>
-  </natures>
+	<name>smssender</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.maven.ide.eclipse.maven2Builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
+		<nature>org.maven.ide.eclipse.maven2Nature</nature>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>android-number-picker_src_main_java</name>
+			<type>2</type>
+			<locationURI>_android_android_number_picker_35ff3cb4/src/main/java</locationURI>
+		</link>
+		<link>
+			<name>assets</name>
+			<type>2</type>
+			<locationURI>PROJECT_LOC/src/main/android-assets</locationURI>
+		</link>
+		<link>
+			<name>gen</name>
+			<type>2</type>
+			<locationURI>PROJECT_LOC/target/generated-sources/r</locationURI>
+		</link>
+		<link>
+			<name>res</name>
+			<type>2</type>
+			<locationURI>PROJECT_LOC/src/main/android-resources</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
