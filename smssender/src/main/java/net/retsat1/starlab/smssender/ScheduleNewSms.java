@@ -41,12 +41,13 @@ public class ScheduleNewSms extends Activity {
 
     private EditText messageEditText;
     private NumberValidator numberValidator;
-    private SmsMessageDao smsMessageDao; 
+    private SmsMessageDao smsMessageDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        
+
         setContentView(R.layout.schedule);
         numberValidator = new NumberHighPaidValidator();
         datePicker = (DatePicker) findViewById(R.id.dataPicker);
@@ -98,70 +99,68 @@ public class ScheduleNewSms extends Activity {
         }
 
     }
-    private static int idCode =0;
+
+    private static int idCode = 0;
     private long DATE_27_III_2011 = 1301258571993L;
+
     private void addMessageToSend(String number, String message) {
-    	logTime();
+        logTime();
         Log.d(TAG, "sendMessage number " + number + " message " + message);
         idCode++;
-        if (numberValidator.isValid(number)){
-        	Toast.makeText(this, getResources().getString(R.string.this_sms_is_paid), 2000).show();
-        	return;
+        if (numberValidator.isValid(number)) {
+            Toast.makeText(this, getResources().getString(R.string.this_sms_is_paid), 2000).show();
+            return;
         }
         long timeNow = System.currentTimeMillis();
         long scheduledTimeMillis = getSetupTime();
-        int reqCode = (int)((timeNow-DATE_27_III_2011)+idCode);
+        int reqCode = (int) ((timeNow - DATE_27_III_2011) + idCode);
         SmsMessage smsMessage = createNewMessage(reqCode, number, message, scheduledTimeMillis);
         smsMessageDao.insert(smsMessage);
         alarmSetup(smsMessage);
     }
 
-	private SmsMessage createNewMessage(int reqCode, String number,
-			String message, long scheduledTimeMillis) {
-		SmsMessage smsMessage = new SmsMessage();
-		smsMessage.id = reqCode;
-		smsMessage.number = number;
-		smsMessage.message = message;
-		smsMessage.deliveryDate = scheduledTimeMillis;
-		smsMessage.dateOfSetup = System.currentTimeMillis();
-		smsMessage.dateOfStatus =  System.currentTimeMillis();
-		smsMessage.messageStatus = SmsMessage.STATUS_UNSENT;
-		smsMessage.deliveryStatus = SmsMessage.STATUS_UNSENT;
-		
-		return smsMessage;
-	}
+    private SmsMessage createNewMessage(int reqCode, String number, String message, long scheduledTimeMillis) {
+        SmsMessage smsMessage = new SmsMessage();
+        smsMessage.id = reqCode;
+        smsMessage.number = number;
+        smsMessage.message = message;
+        smsMessage.deliveryDate = scheduledTimeMillis;
+        smsMessage.dateOfSetup = System.currentTimeMillis();
+        smsMessage.dateOfStatus = System.currentTimeMillis();
+        smsMessage.messageStatus = SmsMessage.STATUS_UNSENT;
+        smsMessage.deliveryStatus = SmsMessage.STATUS_UNSENT;
 
-	private void alarmSetup(SmsMessage smsMessage) {
-		
-		Log.d(TAG, "Data when" + smsMessage.deliveryDate );
-		Intent intent = new Intent(this, SendingService.class);
-		intent.putExtra(SmsMessage.SMS_ID, smsMessage.id);
-        
+        return smsMessage;
+    }
+
+    private void alarmSetup(SmsMessage smsMessage) {
+
+        Log.d(TAG, "Data when" + smsMessage.deliveryDate);
+        Intent intent = new Intent(this, SendingService.class);
+        intent.putExtra(SmsMessage.SMS_ID, smsMessage.id);
+
         PendingIntent pendingIntent = PendingIntent.getService(this, smsMessage.id, intent, PendingIntent.FLAG_ONE_SHOT);
-        
+
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, smsMessage.deliveryDate, pendingIntent);
-		
-	}
 
-	
+    }
 
-	private long getSetupTime() {
-		Calendar calendar = GregorianCalendar.getInstance();
-		calendar.set(datePicker.getYear(), datePicker.getMonth(),
-				datePicker.getDayOfMonth(), timePicker.getCurrentHour(),
-				timePicker.getCurrentMinute(), timePicker.getCurrentSecond());
-		calendar.set(Calendar.MILLISECOND, 0);
-		return calendar.getTimeInMillis();
-	}
+    private long getSetupTime() {
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute(),
+                timePicker.getCurrentSecond());
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis();
+    }
 
-	private void logTime() {
-		Log.d(TAG, "year: " + datePicker.getYear());
+    private void logTime() {
+        Log.d(TAG, "year: " + datePicker.getYear());
         Log.d(TAG, "month: " + datePicker.getMonth());
         Log.d(TAG, "day: " + datePicker.getDayOfMonth());
         Log.d(TAG, "hh: " + timePicker.getCurrentHour());
         Log.d(TAG, "mm: " + timePicker.getCurrentMinute());
         Log.d(TAG, "ss: " + timePicker.getCurrentSecond());
-	}
+    }
 
 }
