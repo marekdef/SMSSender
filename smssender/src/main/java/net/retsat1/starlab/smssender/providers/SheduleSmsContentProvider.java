@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.retsat1.starlab.smssender.dto.SmsMessage;
-
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;

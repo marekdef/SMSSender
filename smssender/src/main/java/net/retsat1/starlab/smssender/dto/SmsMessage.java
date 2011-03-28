@@ -1,10 +1,9 @@
 package net.retsat1.starlab.smssender.dto;
 
 import net.retsat1.starlab.smssender.providers.SheduleSmsContentProvider;
+import net.retsat1.starlab.smssender.receiver.SmsStatusDeliveredReceiver;
 import net.retsat1.starlab.smssender.receiver.SmsStatusSendReceiver;
-import android.app.Activity;
 import android.net.Uri;
-import android.telephony.SmsManager;
 
 public class SmsMessage {
 	//intent and db columns names 

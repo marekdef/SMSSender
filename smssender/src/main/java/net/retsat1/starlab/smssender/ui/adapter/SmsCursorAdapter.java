@@ -1,6 +1,5 @@
 package net.retsat1.starlab.smssender.ui.adapter;
 
-import java.util.HashSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.retsat1.starlab.smssender.R;

@@ -1,10 +1,10 @@
 package net.retsat1.starlab.smssender.dao;
 
+import net.retsat1.starlab.smssender.dto.SmsMessage;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
-import net.retsat1.starlab.smssender.dto.SmsMessage;
 
 public class SmsMessageDaoImpl implements SmsMessageDao {
 

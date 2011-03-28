@@ -1,7 +1,5 @@
 package net.retsat1.starlab.smssender.dao;
 
-import java.awt.List;
-
 import net.retsat1.starlab.smssender.dto.SmsMessage;
 
 public interface SmsMessageDao {
