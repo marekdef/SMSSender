@@ -26,6 +26,7 @@ public class SmsMessage {
 	 */
 	public static final String MESSAGE_STATUS = "MESSAGE_STATUS"; // -2 not sent yet
 	public static final int STATUS_UNSENT = -2;
+	public static final int STATUS_SENDING = -3;
 	/**
 	 * List of state you can find in 
 	 * {@link SmsStatusDeliveredReceiver}
@@ -57,7 +58,10 @@ public class SmsMessage {
 	public String message;
 	public long dateOfSetup;
 	public long dateOfStatus;
-	
+	public long deliveryDate;
+	public int id;
+	public int messageStatus;
+	public int deliveryStatus;
 	public SmsMessage() {
 	}
 	public SmsMessage(String number, String message) {

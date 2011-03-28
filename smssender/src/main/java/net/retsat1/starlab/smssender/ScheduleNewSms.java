@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import net.retsat1.starlab.android.timepicker.DetailedTimePicker;
+import net.retsat1.starlab.smssender.dao.SmsMessageDao;
+import net.retsat1.starlab.smssender.dao.SmsMessageDaoImpl;
 import net.retsat1.starlab.smssender.dto.SmsMessage;
 import net.retsat1.starlab.smssender.service.SendingService;
 import net.retsat1.starlab.smssender.validators.NumberHighPaidValidator;
@@ -40,6 +42,7 @@ public class ScheduleNewSms extends Activity {
 
     private EditText messageEditText;
     private NumberValidator numberValidator;
+    private SmsMessageDao smsMessageDao; 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -59,10 +62,10 @@ public class ScheduleNewSms extends Activity {
                 String number = numberEditText.getText().toString();
                 String message = messageEditText.getText().toString();
 
-                sendMessage(number, message);
+                addMessageToSend(number, message);
             }
         });
-
+        smsMessageDao = new SmsMessageDaoImpl(this);
         setAdapterForNumberEditor();
     }
 
@@ -98,7 +101,7 @@ public class ScheduleNewSms extends Activity {
     }
     private static int idCode =0;
     private long DATE_27_III_2011 = 1301258571993L;
-    private void sendMessage(String number, String message) {
+    private void addMessageToSend(String number, String message) {
     	logTime();
         Log.d(TAG, "sendMessage number " + number + " message " + message);
         idCode++;
@@ -109,41 +112,40 @@ public class ScheduleNewSms extends Activity {
         long timeNow = System.currentTimeMillis();
         long scheduledTimeMillis = getSetupTime();
         int reqCode = (int)((timeNow-DATE_27_III_2011)+idCode);
-        alarmSetup(reqCode, number, message, scheduledTimeMillis);
-        addSmsToDatabase(reqCode, number, message, scheduledTimeMillis);
+        SmsMessage smsMessage = createNewMessage(reqCode, number, message, scheduledTimeMillis);
+        smsMessageDao.insert(smsMessage);
+        alarmSetup(smsMessage);
     }
 
-	private void alarmSetup(int reqCode, String number, String message, long time) {
+	private SmsMessage createNewMessage(int reqCode, String number,
+			String message, long scheduledTimeMillis) {
+		SmsMessage smsMessage = new SmsMessage();
+		smsMessage.id = reqCode;
+		smsMessage.number = number;
+		smsMessage.message = message;
+		smsMessage.deliveryDate = scheduledTimeMillis;
+		smsMessage.dateOfSetup = System.currentTimeMillis();
+		smsMessage.dateOfStatus =  System.currentTimeMillis();
+		smsMessage.messageStatus = SmsMessage.STATUS_UNSENT;
+		smsMessage.deliveryStatus = SmsMessage.STATUS_UNSENT;
 		
-		Log.d(TAG, "Data when" + time );
+		return smsMessage;
+	}
+
+	private void alarmSetup(SmsMessage smsMessage) {
+		
+		Log.d(TAG, "Data when" + smsMessage.deliveryDate );
 		Intent intent = new Intent(this, SendingService.class);
+		intent.putExtra(SmsMessage.SMS_ID, smsMessage.id);
         
-        PendingIntent pendingIntent = PendingIntent.getService(this, reqCode, intent, PendingIntent.FLAG_ONE_SHOT);
-        intent.putExtra(SmsMessage.SMS_ID, reqCode);
-        intent.putExtra(SmsMessage.MESSAGE, message);
-        intent.putExtra(SmsMessage.RECEIVER, number);
-        intent.putExtra(SmsMessage.DELIVERY_DATE, time);
+        PendingIntent pendingIntent = PendingIntent.getService(this, smsMessage.id, intent, PendingIntent.FLAG_ONE_SHOT);
         
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, smsMessage.deliveryDate, pendingIntent);
 		
 	}
 
-	private void addSmsToDatabase(int reqCode, String number, String message, long time) {
-		
-		ContentValues values = new ContentValues();
-        values.put(SmsMessage.SMS_ID, reqCode);
-        values.put(SmsMessage.MESSAGE, message);
-        values.put(SmsMessage.RECEIVER, number);
-
-        values.put(SmsMessage.MESSAGE_STATUS, SmsMessage.STATUS_UNSENT);
-        values.put(SmsMessage.SETUP_DATE, System.currentTimeMillis());
-        values.put(SmsMessage.DELIVERY_STATUS, SmsMessage.STATUS_UNSENT);
-        values.put(SmsMessage.STATUS_DATE, 0);  
-        values.put(SmsMessage.DELIVERY_DATE, time);
-        getContentResolver().insert(SmsMessage.CONTENT_URI, values);
-		
-	}
+	
 
 	private long getSetupTime() {
 		Calendar calendar = GregorianCalendar.getInstance();
