@@ -1,5 +1,6 @@
 package net.retsat1.starlab.smssender.receiver;
 
+import net.retsat1.starlab.smssender.dao.SmsMessageDaoImpl;
 import net.retsat1.starlab.smssender.dto.SmsMessage;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 public class SmsStatusSendReceiver extends BroadcastReceiver{
 
 	private static final String TAG = "SmsStatusSendReceiver";
+	private SmsMessageDaoImpl smsMessageDao;
 
 	public SmsStatusSendReceiver() {
 	
@@ -24,7 +26,7 @@ public class SmsStatusSendReceiver extends BroadcastReceiver{
 		Log.d(TAG, "intent  " + i + " d=" + i.describeContents());
 		int smsId =  i.getExtras().getInt(SmsMessage.SMS_ID);
 		Log.d(TAG, "smsId() " + smsId);
-		updateSmsStatus(smsId, resultCode);
+		updateSmsStatus(context, smsId, resultCode);
 		switch (resultCode)
         {
 		
@@ -53,8 +55,11 @@ public class SmsStatusSendReceiver extends BroadcastReceiver{
 		
 	}
 
-	private void updateSmsStatus(int smsId, int resultCode) {
-		
+	private void updateSmsStatus(Context context, int smsId, int resultCode) {
+		smsMessageDao = new SmsMessageDaoImpl(context);
+		SmsMessage smsMessage =  smsMessageDao.searchByID(smsId);
+		smsMessage.messageStatus = resultCode;
+		smsMessageDao.update(smsMessage);
 		
 	}
 

@@ -34,20 +34,8 @@ public class SendingService extends Service {
 	
 	private void sendSms(int smsId) {
 		Log.d(TAG, "smsId " + smsId);
-		String where = SmsMessage.SMS_ID + " =?";
-		String[] selectionArgs = new String[]{""+smsId};
-		SmsMessage smsMessage = new SmsMessage();
-		smsMessage.id= smsId;
-		Cursor c = getContentResolver().query(SmsMessage.CONTENT_URI, null, where, selectionArgs, null);
-	
-		if (c != null && c.getCount()>0){
-			c.moveToFirst();
-			Log.d("TAG", "count =" + c.getCount());
-			smsMessage.message=c.getString(c.getColumnIndex(SmsMessage.MESSAGE));
-			smsMessage.number=c.getString(c.getColumnIndex(SmsMessage.RECEIVER));
-			c.close();
-			sendSms(smsMessage);
-		}
+		SmsMessage smsMessage = smsMessageDao.searchByID(smsId);
+		sendSms(smsMessage);		
 	}
 
 
