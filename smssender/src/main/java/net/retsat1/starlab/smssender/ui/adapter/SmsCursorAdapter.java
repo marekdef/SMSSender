@@ -42,13 +42,7 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
 		cb.setTag(id);
 		return v;
 	}
-	@Override
-	public void bindView(View view, Context context, Cursor cur) {
-		String id = cur.getString(cur.getColumnIndex(SmsMessage.SMS_ID));
-		CheckBox cb =  (CheckBox) view.findViewById(R.id.checked);
-		Log.d(TAG, "bindView ID=" +id +" checked= " + cb.isChecked());
-		super.bindView(view, context, cur);
-	}
+	
 	
 	
 	@Override

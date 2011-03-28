@@ -1,7 +1,11 @@
 package net.retsat1.starlab.smssender;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import net.retsat1.starlab.android.timepicker.DetailedTimePicker;
 import net.retsat1.starlab.smssender.dao.SmsMessageDao;
@@ -22,11 +26,19 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.ListAdapter;
+import android.widget.SimpleAdapter;
+import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.SimpleCursorAdapter;
+import android.widget.SimpleCursorAdapter.CursorToStringConverter;
 import android.widget.Toast;
 
 public class ScheduleNewSms extends Activity {
@@ -72,33 +84,60 @@ public class ScheduleNewSms extends Activity {
     private void setAdapterForNumberEditor() {
         ContentResolver content = getContentResolver();
         String SELECTION = ContactsContract.Contacts.HAS_PHONE_NUMBER + "='1'";
-        String[] PROJECTION = new String[] {
-
-        ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.HAS_PHONE_NUMBER, };
+        String[] PROJECTION = new String[] { 
+        		ContactsContract.Contacts._ID, 
+        		ContactsContract.Contacts.DISPLAY_NAME, 
+        		ContactsContract.Contacts.HAS_PHONE_NUMBER, 
+        		};
 
         Cursor cursor = content.query(ContactsContract.Contacts.CONTENT_URI, PROJECTION, SELECTION, null, null);
 
         if (cursor == null) {
             Log.w(TAG, "No contacts to display");
         } else {
+        	
+			ArrayList<HashMap<String, String>> phones = new ArrayList<HashMap<String, String>>();
+
+			SimpleAdapter notes = new SimpleAdapter(this, phones,
+					R.layout.phone_row_entry, new String[]{"name", "phone"},
+					new int[]{R.id.row_display_name, R.id.row_phone_number});			
+			
             while (cursor.moveToNext()) {
-                String data = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+            	String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));  
+            	String displayName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+            	
+            	String where = ContactsContract.CommonDataKinds.Phone.CONTACT_ID+ " = ?";
+            	String[] selection = new String[] { id };
+            	Cursor pCur = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null, where, selection, null);
+				while (pCur.moveToNext()) {
+					// Do something with phones
+					String phone = pCur
+							.getString(pCur
+									.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA));
 
-                int hasNumber = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-
-                Log.d(TAG, "data " + data + " hasNumber=" + hasNumber);
-            }
-
-            String[] columns = new String[] { ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.HAS_PHONE_NUMBER };
-            int[] names = new int[] { R.id.row_display_name, R.id.row_phone_number };
-
-            SimpleCursorAdapter adapterPhone = new SimpleCursorAdapter(this, R.layout.phone_row_entry, cursor, columns, names);
-            startManagingCursor(cursor);
-            numberEditText.setAdapter(adapterPhone);
-
+					String phoneType = pCur
+							.getString(pCur
+									.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+					
+					//String name = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+					String row = displayName + " <" + phone + ">"; 
+					HashMap<String, String> phoneRow = new HashMap<String, String>();
+					phoneRow.put("name", displayName);
+					phoneRow.put("phone", phone);
+					phones.add(phoneRow);
+					Log.i("Pratik", "PHONE: " + displayName + " <" + phone + "> ");
+					Log.i("Pratik", "PHONE TYPE: " + phoneType);
+				}
+				pCur.close();
+			}
+           
+			numberEditText.setAdapter(notes);
+			
         }
 
     }
+    
+    
     private static int idCode =0;
     private long DATE_27_III_2011 = 1301258571993L;
     private void addMessageToSend(String number, String message) {
