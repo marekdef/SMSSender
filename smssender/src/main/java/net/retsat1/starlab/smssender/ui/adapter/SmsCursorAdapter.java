@@ -61,7 +61,7 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
 		boolean b= checkList.contains(i);
 		cBox.setChecked(b);
 		Log.d(TAG, "position " + position);
-		return super.getView(position, convertView, parent);
+		return v;
 	}
 	
 	
