@@ -1,6 +1,5 @@
 package net.retsat1.starlab.smssender.ui.adapter;
 
-import java.util.HashSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.retsat1.starlab.smssender.R;
@@ -16,7 +15,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SimpleCursorAdapter;
 
-public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedChangeListener{
+public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedChangeListener {
 
 	private static final String TAG = "SmsCursorAdapter";
 	private Cursor c;
@@ -63,44 +62,44 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
 		Log.d(TAG, "position " + position);
 		return v;
 	}
-	
-	
 
-	public void deleteAllCheckedItems() {
 
-		String where = SmsMessage.SMS_ID + " =?";
-		if (!checkList.isEmpty()){
-			for (Integer id : checkList) {
-				Log.d(TAG, "Delete " + id);
-				String[] args = new String[]{""+id};
-				context.getContentResolver().delete(SmsMessage.CONTENT_URI, where ,args);
-				checkList.remove(id);
-			}
-		}
-		notifyDataSetInvalidated();
-		notifyDataSetChanged();
-	}
+    public void deleteAllCheckedItems() {
 
-	@Override
-	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		Log.d(TAG, "TAG " + buttonView.getTag());
-		if (isChecked){
-			checkList.add((Integer)buttonView.getTag());
-		}else{
-			checkList.remove((Integer)buttonView.getTag());
-		}
-		Log.d(TAG, "checkList " + checkList.size());
-	}
+        String where = SmsMessage.SMS_ID + " =?";
+        if (!checkList.isEmpty()) {
+            for (Integer id : checkList) {
+                Log.d(TAG, "Delete " + id);
+                String[] args = new String[] { "" + id };
+                context.getContentResolver().delete(SmsMessage.CONTENT_URI, where, args);
+                checkList.remove(id);
+            }
+        }
+        notifyDataSetInvalidated();
+        notifyDataSetChanged();
+    }
 
-	public void selectAllItems() {
-		if (getCount()>0){
-			c.moveToFirst();
-		    do{
-		        Integer id =c.getInt(c.getColumnIndex(SmsMessage.SMS_ID)); //crashes here
-		        checkList.add(id);
-		    }while(c.moveToNext());
-			notifyDataSetInvalidated();
-			notifyDataSetChanged();
-		}
-	}
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(TAG, "TAG " + buttonView.getTag());
+        if (isChecked) {
+            checkList.add((Integer) buttonView.getTag());
+        } else {
+            checkList.remove((Integer) buttonView.getTag());
+        }
+        Log.d(TAG, "checkList " + checkList.size());
+    }
+
+    public void selectAllItems() {
+        if (getCount() > 0) {
+            c.moveToFirst();
+            do {
+                Integer id = c.getInt(c.getColumnIndex(SmsMessage.SMS_ID)); // crashes
+                                                                            // here
+                checkList.add(id);
+            } while (c.moveToNext());
+            notifyDataSetInvalidated();
+            notifyDataSetChanged();
+        }
+    }
 }
