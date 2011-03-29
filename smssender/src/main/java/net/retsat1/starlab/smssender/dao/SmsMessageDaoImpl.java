@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.util.Log;
 
 public class SmsMessageDaoImpl implements SmsMessageDao {
+    private static final String TAG = SmsMessageDaoImpl.class.getSimpleName();
 
     private Context mContext;
 
@@ -16,7 +17,6 @@ public class SmsMessageDaoImpl implements SmsMessageDao {
 
     @Override
     public boolean delete(SmsMessage smsMessage) {
-
         return false;
     }
 
@@ -33,7 +33,7 @@ public class SmsMessageDaoImpl implements SmsMessageDao {
         values.put(SmsMessage.STATUS_DATE, smsMessage.dateOfStatus);
         values.put(SmsMessage.DELIVERY_DATE, smsMessage.deliveryDate);
         String where = SmsMessage.SMS_ID + " =?";
-        String[] selectionArgs = new String[] { "" + smsMessage.id };
+        String[] selectionArgs = new String[] { String.valueOf(smsMessage.id) };
         mContext.getContentResolver().update(SmsMessage.CONTENT_URI, values, where, selectionArgs);
         return true;
     }
@@ -57,12 +57,12 @@ public class SmsMessageDaoImpl implements SmsMessageDao {
     @Override
     public SmsMessage searchByID(int smsId) {
         String where = SmsMessage.SMS_ID + " =?";
-        String[] selectionArgs = new String[] { "" + smsId };
+        String[] selectionArgs = new String[] { String.valueOf(smsId) };
         Cursor c = mContext.getContentResolver().query(SmsMessage.CONTENT_URI, null, where, selectionArgs, null);
         SmsMessage smsMessage = null;
         if (c != null && c.getCount() > 0) {
             c.moveToFirst();
-            Log.d("TAG", "count =" + c.getCount());
+            Log.d(TAG, "count =" + c.getCount());
             smsMessage = new SmsMessage();
             smsMessage.id = smsId;
             smsMessage.message = c.getString(c.getColumnIndex(SmsMessage.MESSAGE));
