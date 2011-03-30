@@ -4,7 +4,6 @@ import net.retsat1.starlab.smssender.dto.SmsMessage;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.ContentObserver;
 import android.database.Cursor;
 import android.util.Log;
 

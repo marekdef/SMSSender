@@ -44,7 +44,7 @@ public class SmsStatusSendReceiver extends BroadcastReceiver {
         case SmsManager.RESULT_ERROR_RADIO_OFF:
             Toast.makeText(context, "Radio off", Toast.LENGTH_SHORT).show();
             break;
-        default: 
+        default:
             Toast.makeText(context, "Sms Receiver status unknown", Toast.LENGTH_SHORT).show();
             break;
         }

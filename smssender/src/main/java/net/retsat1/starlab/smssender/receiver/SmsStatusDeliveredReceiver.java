@@ -1,16 +1,14 @@
 package net.retsat1.starlab.smssender.receiver;
 
+import net.retsat1.starlab.smssender.R;
 import net.retsat1.starlab.smssender.dao.SmsMessageDao;
 import net.retsat1.starlab.smssender.dao.SmsMessageDaoImpl;
 import net.retsat1.starlab.smssender.dto.SmsMessage;
-
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import net.retsat1.starlab.smssender.*;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -41,7 +39,7 @@ public class SmsStatusDeliveredReceiver extends BroadcastReceiver {
             Toast.makeText(context, res.getString(R.string.sms_not_delivered), Toast.LENGTH_SHORT).show();
             break;
         default:
-            Toast.makeText(context,res.getString(R.string.sms_delivered_unknown) , Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, res.getString(R.string.sms_delivered_unknown), Toast.LENGTH_SHORT).show();
             break;
         }
 

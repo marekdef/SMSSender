@@ -1,6 +1,7 @@
 package net.retsat1.starlab.smssender.exception;
 
 import java.util.HashMap;
+
 import net.retsat1.starlab.smssender.R;
 import android.content.Context;
 
@@ -12,15 +13,15 @@ import android.content.Context;
  * 
  */
 public class GUIException extends Exception {
-    //This be more 
+    // This be more
     public static int ERROR_DELIVERY_STATUS_GENERAL = -110;
-    //Mapping between error code and messages
+    // Mapping between error code and messages
     public static HashMap<Integer, Integer> i18nErrorMapping = null;
     static {
         i18nErrorMapping = new HashMap<Integer, Integer>();
         i18nErrorMapping.put(ERROR_DELIVERY_STATUS_GENERAL, R.string.dialog_alert_title);
     }
-    
+
     private int bugID;
     private Context context;
 

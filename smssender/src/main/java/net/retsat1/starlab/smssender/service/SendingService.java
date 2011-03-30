@@ -27,7 +27,7 @@ public class SendingService extends Service {
         int smsId = intent.getExtras().getInt(SmsMessage.SMS_ID);
         Log.d(TAG, "onStart " + startId + " smsId " + smsId + intent.describeContents());
         super.onStart(intent, startId);
-            sendSms(smsId);        
+        sendSms(smsId);
     }
 
     private void sendSms(int smsId) {
@@ -37,21 +37,22 @@ public class SendingService extends Service {
             sendSms(smsMessage);
         } catch (Exception e) {
             Log.d(TAG, "Message not find in database", e);
-            smsMessage.deliveryStatus = -110; //error
+            smsMessage.deliveryStatus = -110; // error
             smsMessageDao.update(smsMessage);
         }
     }
 
     public static final String SENT = "SMS_SENT";
     public static final String DELIVERED = "SMS_DELIVERED";
-    public void sendSms(SmsMessage smsMessage) throws Exception{
+
+    public void sendSms(SmsMessage smsMessage) throws Exception {
         try {
             Intent sendIntent = new Intent(SENT);
             Intent deliveredIntent = new Intent(DELIVERED);
             sendIntent.putExtra(SmsMessage.SMS_ID, smsMessage.id);
             deliveredIntent.putExtra(SmsMessage.SMS_ID, smsMessage.id);
             PendingIntent sentPI = PendingIntent.getBroadcast(this, smsMessage.id, sendIntent, 0);
-    
+
             PendingIntent deliveredPI = PendingIntent.getBroadcast(this, smsMessage.id, deliveredIntent, 0);
             // when the SMS has been sent---
             this.registerReceiver(new SmsStatusSendReceiver(), new IntentFilter(SENT));
@@ -60,11 +61,11 @@ public class SendingService extends Service {
             SmsManager sms = SmsManager.getDefault();
             updateSmsStatusToSending(smsMessage);
             sms.sendTextMessage(smsMessage.number, null, smsMessage.message, sentPI, deliveredPI);
-        }catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             Log.d(TAG, "Empty message or number or ... fatal error", e);
             throw new Exception("Sms not send empty body  -111");
 
-        }catch (Throwable e) {
+        } catch (Throwable e) {
             Log.d(TAG, "Problem witch sending sms", e);
             throw new Exception("Sms not send -110");
         }
@@ -72,13 +73,14 @@ public class SendingService extends Service {
 
     /**
      * Helper method to save updated state of message.
+     * 
      * @param smsMessage
      */
     private void updateSmsStatusToSending(SmsMessage smsMessage) {
         smsMessage.messageStatus = SmsMessage.STATUS_SENDING;
         smsMessage.dateOfStatus = System.currentTimeMillis();
         smsMessageDao.update(smsMessage);
-        
+
     }
 
     @Override

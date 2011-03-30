@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import net.retsat1.starlab.android.timepicker.NumberPicker.OnChangedListener;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;

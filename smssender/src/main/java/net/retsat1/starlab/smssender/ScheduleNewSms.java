@@ -5,8 +5,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-import javax.print.attribute.standard.MediaSize.Other;
-
 import net.retsat1.starlab.android.timepicker.DetailedTimePicker;
 import net.retsat1.starlab.smssender.dao.SmsMessageDao;
 import net.retsat1.starlab.smssender.dao.SmsMessageDaoImpl;
@@ -16,10 +14,8 @@ import net.retsat1.starlab.smssender.validators.NumberHighPaidValidator;
 import net.retsat1.starlab.smssender.validators.NumberValidator;
 import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -93,7 +89,7 @@ public class ScheduleNewSms extends Activity {
         private static final long serialVersionUID = 1424324242115L;
 
         /**
-         * Method how to display contact in AutoComplete method 
+         * Method how to display contact in AutoComplete method
          */
         @Override
         public String toString() {

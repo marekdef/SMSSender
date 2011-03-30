@@ -46,7 +46,7 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
         if (v == null) {
-              v = super.getView(position, convertView, parent);
+            v = super.getView(position, convertView, parent);
         }
         this.c.moveToPosition(position);
         Integer i = this.c.getInt(this.c.getColumnIndex(SmsMessage.SMS_ID));
