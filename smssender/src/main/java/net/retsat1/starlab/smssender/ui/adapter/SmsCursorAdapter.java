@@ -17,52 +17,49 @@ import android.widget.SimpleCursorAdapter;
 
 public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedChangeListener {
 
-	private static final String TAG = "SmsCursorAdapter";
-	private Cursor c;
-	private Context context;
-	private ConcurrentLinkedQueue<Integer> checkList = new ConcurrentLinkedQueue<Integer>();
-	
-	public SmsCursorAdapter(Context context, int layout, Cursor c,
-			String[] from, int[] to) {
-		super(context, layout, c, from, to);
-		this.c = c;
-		this.context = context;
-		
-	}
-	
-	@Override
-	public synchronized View newView(Context context, Cursor cursor, ViewGroup parent) {
-		LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View v =  li.inflate(R.layout.list_item, parent, false);
-		CheckBox cb =  (CheckBox) v.findViewById(R.id.checked);
-		Integer id = cursor.getInt(cursor.getColumnIndex(SmsMessage.SMS_ID));
-		Log.d(TAG, "newView ID=" +id +" checked= " + cb.isChecked());
-		cb.setOnCheckedChangeListener(this);
-		cb.setTag(id);
-		return v;
-	}
-	
-	
-	
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		View v = convertView;
-		if (v == null) {
-			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = inflater.inflate(R.layout.list_item, null);
-		}
+    private static final String TAG = "SmsCursorAdapter";
+    private Cursor c;
+    private Context context;
+    private ConcurrentLinkedQueue<Integer> checkList = new ConcurrentLinkedQueue<Integer>();
+
+    public SmsCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
+        super(context, layout, c, from, to);
+        this.c = c;
+        this.context = context;
+        c.setNotificationUri(context.getContentResolver(), SmsMessage.CONTENT_URI);
+        
+    }
+
+    @Override
+    public synchronized View newView(Context context, Cursor cursor, ViewGroup parent) {
+        LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = li.inflate(R.layout.list_item, parent, false);
+        
+        CheckBox cb = (CheckBox) v.findViewById(R.id.checked);
+        Integer id = cursor.getInt(cursor.getColumnIndex(SmsMessage.SMS_ID));
+        Log.d(TAG, "newView ID=" + id + " checked= " + cb.isChecked());
+        cb.setOnCheckedChangeListener(this);
+        cb.setTag(id);
+        return v;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View v = convertView;
+        if (v == null) {
+              v = super.getView(position, convertView, parent);
+        }
         this.c.moveToPosition(position);
         Integer i = this.c.getInt(this.c.getColumnIndex(SmsMessage.SMS_ID));
         Log.d(TAG, "IDID = " + i);
-		CheckBox cBox = (CheckBox) v.findViewById(R.id.checked);
-		cBox.setTag(i);
-		cBox.setOnCheckedChangeListener(this);
-		boolean b= checkList.contains(i);
-		cBox.setChecked(b);
-		Log.d(TAG, "position " + position);
-		return v;
-	}
-
+        CheckBox cBox = (CheckBox) v.findViewById(R.id.checked);
+        cBox.setTag(i);
+        cBox.setOnCheckedChangeListener(this);
+        boolean b = checkList.contains(i);
+        cBox.setChecked(b);
+        Log.d(TAG, "position " + position);
+        return v;
+    }
 
     public void deleteAllCheckedItems() {
 

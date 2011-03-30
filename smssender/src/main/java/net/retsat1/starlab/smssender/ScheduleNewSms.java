@@ -1,7 +1,11 @@
 package net.retsat1.starlab.smssender;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+
+import javax.print.attribute.standard.MediaSize.Other;
 
 import net.retsat1.starlab.android.timepicker.DetailedTimePicker;
 import net.retsat1.starlab.smssender.dao.SmsMessageDao;
@@ -12,9 +16,14 @@ import net.retsat1.starlab.smssender.validators.NumberHighPaidValidator;
 import net.retsat1.starlab.smssender.validators.NumberValidator;
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,6 +31,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 public class ScheduleNewSms extends Activity {
@@ -39,11 +49,12 @@ public class ScheduleNewSms extends Activity {
     private NumberValidator numberValidator;
     private SmsMessageDao smsMessageDao;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
-
 
         setContentView(R.layout.schedule);
         numberValidator = new NumberHighPaidValidator();
@@ -66,86 +77,93 @@ public class ScheduleNewSms extends Activity {
         setAdapterForNumberEditor();
     }
 
+    public static int contactUpdateStatus = 0;
+
+    public boolean isContactUpdateIsNeed() {
+        if (contactUpdateStatus == 0) {
+            return true;
+        }
+        return false;
+    }
+    private class HashMap2 extends HashMap<String, String>{
+       
+        @Override
+        public String toString() {
+            return this.get("name") + " <"+this.get("phone")+">"; 
+        }
+    }
+    
+    private static SimpleAdapter phoneAdapter;
     private void setAdapterForNumberEditor() {
+        if (isContactUpdateIsNeed())
+        progressDialog = ProgressDialog.show(this, "Working..", "Update contacts", true, false);
+        Thread t = new Thread() {
+            public void run() {
+                contactUpdateStatus = 1;
+                final ContentResolver content = getContentResolver();
+                String SELECTION = ContactsContract.Contacts.HAS_PHONE_NUMBER + "='1'";
+                String[] PROJECTION = new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME,
+                        ContactsContract.Contacts.HAS_PHONE_NUMBER, };
+                Cursor cursor = content.query(ContactsContract.Contacts.CONTENT_URI, PROJECTION, SELECTION, null, null);
+                if (cursor == null) {
+                    Log.w(TAG, "No contacts to display");
+                } else {
+                    
+                    ArrayList<HashMap2> phones = new ArrayList<HashMap2>();
+                    phoneAdapter = new SimpleAdapter(ScheduleNewSms.this, phones, R.layout.phone_row_entry, new String[] { "name", "phone" },
+                            new int[] { R.id.row_display_name, R.id.row_phone_number });
 
+                    while (cursor.moveToNext()) {
+                        String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                        String displayName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
 
-//		new Thread() {
-//			public void run() {
-//
-//				final ContentResolver content = getContentResolver();
-//				String SELECTION = ContactsContract.Contacts.HAS_PHONE_NUMBER
-//						+ "='1'";
-//				String[] PROJECTION = new String[]{
-//						ContactsContract.Contacts._ID,
-//						ContactsContract.Contacts.DISPLAY_NAME,
-//						ContactsContract.Contacts.HAS_PHONE_NUMBER,};
-//				Cursor cursor = content.query(
-//						ContactsContract.Contacts.CONTENT_URI, PROJECTION,
-//						SELECTION, null, null);
-//				if (cursor == null) {
-//					Log.w(TAG, "No contacts to display");
-//				} else {
-//					ArrayList<HashMap<String, String>> phones = new ArrayList<HashMap<String, String>>();
-//					final SimpleAdapter notes = new SimpleAdapter(
-//							ScheduleNewSms.this, phones,
-//							R.layout.phone_row_entry, new String[]{"name",
-//									"phone"}, new int[]{R.id.row_display_name,
-//									R.id.row_phone_number});
-//
-//					while (cursor.moveToNext()) {
-//						String id = cursor.getString(cursor
-//								.getColumnIndex(ContactsContract.Contacts._ID));
-//						String displayName = cursor
-//								.getString(cursor
-//										.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-//
-//						String where = ContactsContract.CommonDataKinds.Phone.CONTACT_ID
-//								+ " = ?";
-//						String[] selection = new String[]{id};
-//						Cursor pCur = getContentResolver()
-//								.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-//										null, where, selection, null);
-//						while (pCur.moveToNext()) {
-//							// Do something with phones
-//							String phone = pCur
-//									.getString(pCur
-//											.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA));
-//
-//							String phoneType = pCur
-//									.getString(pCur
-//											.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
-//
-//							// String name =
-//							// pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-//							String row = displayName + " <" + phone + ">";
-//							HashMap<String, String> phoneRow = new HashMap<String, String>();
-//							phoneRow.put("name", displayName);
-//							phoneRow.put("phone", phone);
-//							phones.add(phoneRow);
-//							Log.i("Pratik", "PHONE: " + displayName + " <"
-//									+ phone + "> ");
-//							Log.i("Pratik", "PHONE TYPE: " + phoneType);
-//						}
-//						pCur.close();
-//					}
-//					ScheduleNewSms.this.runOnUiThread(new Runnable() {
-//						
-//						@Override
-//						public void run() {
-//							Log.d(TAG, "one");
-//							//numberEditText.setAdapter(notes);
-//							Log.d(TAG, "two");
-//						}
-//					});
-//				};
-//
-//			}
-//		}.start();
+                        String where = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?";// AND " + ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " " ;
+                        String[] selection = new String[] { id };
+                        String[] phoneProjection = new String[] {ContactsContract.CommonDataKinds.Phone.DATA, ContactsContract.CommonDataKinds.Phone.TYPE};
+                        Cursor pCur = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, phoneProjection , where, selection, null);
+                        Log.d(TAG, "Contact " + id + " how many phone numbers " + pCur.getCount());
+                        while (pCur.moveToNext()) {
+                            // Do something with phones
+                            String phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA));
 
+                            String phoneType = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+                            
+                            HashMap2 phoneRow = new HashMap2();
+                            phoneRow.put("name", displayName);
+                            phoneRow.put("phone", phone);
+                            phones.add(phoneRow);
+                            Log.i("Pratik", "PHONE: " + displayName + " <" + phone + "> ");
+                            Log.i("Pratik", "PHONE TYPE: " + phoneType);
+                        }
+                        pCur.close();
+                    }
+                    ScheduleNewSms.this.runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            Log.d(TAG, "numberEditText setAdapter ");
+                            numberEditText.setAdapter(phoneAdapter);
+                            progressDialog.dismiss();
+                            contactUpdateStatus = 2;
+                            Log.d(TAG, "two");
+                        }
+                    });
+                }
+                ;
+
+            }
+        };
+        if (isContactUpdateIsNeed()) {
+            t.start();
+        }else {
+            assert (phoneAdapter== null);
+            Log.d(TAG, "phone adapter " + phoneAdapter);
+            numberEditText.setAdapter(phoneAdapter);
+        }
     }
 
     private static int idCode = 0;
-    
+
     private long DATE_27_III_2011 = 1301258571993L;
 
     private void addMessageToSend(String number, String message) {

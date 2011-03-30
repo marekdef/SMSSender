@@ -1,17 +1,21 @@
 package net.retsat1.starlab.smssender.dao;
 
 import net.retsat1.starlab.smssender.dto.SmsMessage;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.util.Log;
 
 public class SmsMessageDaoImpl implements SmsMessageDao {
 
     private Context mContext;
+    private ContentResolver contentResolver;
 
     public SmsMessageDaoImpl(Context context) {
         this.mContext = context;
+        this.contentResolver = mContext.getContentResolver();
     }
 
     @Override
@@ -34,7 +38,8 @@ public class SmsMessageDaoImpl implements SmsMessageDao {
         values.put(SmsMessage.DELIVERY_DATE, smsMessage.deliveryDate);
         String where = SmsMessage.SMS_ID + " =?";
         String[] selectionArgs = new String[] { "" + smsMessage.id };
-        mContext.getContentResolver().update(SmsMessage.CONTENT_URI, values, where, selectionArgs);
+        contentResolver.update(SmsMessage.CONTENT_URI, values, where, selectionArgs);
+        contentResolver.notifyChange(SmsMessage.CONTENT_URI, null);
         return true;
     }
 
@@ -51,6 +56,7 @@ public class SmsMessageDaoImpl implements SmsMessageDao {
         values.put(SmsMessage.STATUS_DATE, smsMessage.dateOfStatus);
         values.put(SmsMessage.DELIVERY_DATE, smsMessage.deliveryDate);
         mContext.getContentResolver().insert(SmsMessage.CONTENT_URI, values);
+        contentResolver.notifyChange(SmsMessage.CONTENT_URI, null);
         return true;
     }
 

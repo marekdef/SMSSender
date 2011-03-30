@@ -27,38 +27,54 @@ public class SendingService extends Service {
         int smsId = intent.getExtras().getInt(SmsMessage.SMS_ID);
         Log.d(TAG, "onStart " + startId + " smsId " + smsId + intent.describeContents());
         super.onStart(intent, startId);
-        sendSms(smsId);
+            sendSms(smsId);        
     }
 
     private void sendSms(int smsId) {
         Log.d(TAG, "smsId " + smsId);
         SmsMessage smsMessage = smsMessageDao.searchByID(smsId);
-        sendSms(smsMessage);
+        try {
+            sendSms(smsMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            smsMessage.deliveryStatus = -110; //error
+            smsMessageDao.update(smsMessage);
+        }
     }
 
-    public void sendSms(SmsMessage smsMessage) {
-        String SENT = "SMS_SENT";
-        String DELIVERED = "SMS_DELIVERED";
-        Intent sendIntent = new Intent(SENT);
-        Intent deliveredIntent = new Intent(DELIVERED);
-        sendIntent.putExtra(SmsMessage.SMS_ID, smsMessage.id);
-        deliveredIntent.putExtra(SmsMessage.SMS_ID, smsMessage.id);
-        PendingIntent sentPI = PendingIntent.getBroadcast(this, smsMessage.id, sendIntent, 0);
+    public void sendSms(SmsMessage smsMessage) throws Exception{
+        try {
+            String SENT = "SMS_SENT";
+            String DELIVERED = "SMS_DELIVERED";
+            Intent sendIntent = new Intent(SENT);
+            Intent deliveredIntent = new Intent(DELIVERED);
+            sendIntent.putExtra(SmsMessage.SMS_ID, smsMessage.id);
+            deliveredIntent.putExtra(SmsMessage.SMS_ID, smsMessage.id);
+            PendingIntent sentPI = PendingIntent.getBroadcast(this, smsMessage.id, sendIntent, 0);
+    
+            PendingIntent deliveredPI = PendingIntent.getBroadcast(this, smsMessage.id, deliveredIntent, 0);
+            // when the SMS has been sent---
+            this.registerReceiver(new SmsStatusSendReceiver(), new IntentFilter(SENT));
+            // when the SMS has been delivered---
+            this.registerReceiver(new SmsStatusDeliveredReceiver(), new IntentFilter(DELIVERED));
+            SmsManager sms = SmsManager.getDefault();
+            updateSmsStatusToSending(smsMessage);
+            sms.sendTextMessage(smsMessage.number, null, smsMessage.message, sentPI, deliveredPI);
+        }catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            throw new Exception("Sms not send empty body  -111");
 
-        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, smsMessage.id, deliveredIntent, 0);
-        // when the SMS has been sent---
-        this.registerReceiver(new SmsStatusSendReceiver(), new IntentFilter(SENT));
-        // when the SMS has been delivered---
-        this.registerReceiver(new SmsStatusDeliveredReceiver(), new IntentFilter(DELIVERED));
-        SmsManager sms = SmsManager.getDefault();
-        updateSmsStatusToSending(smsMessage);
-        sms.sendTextMessage(smsMessage.number, null, smsMessage.message, sentPI, deliveredPI);
+        }catch (Throwable e) {
+            e.printStackTrace();
+            throw new Exception("Sms not send -110");
+        }
     }
 
     private void updateSmsStatusToSending(SmsMessage smsMessage) {
         smsMessage.messageStatus = SmsMessage.STATUS_SENDING;
         smsMessage.dateOfStatus = System.currentTimeMillis();
         smsMessageDao.update(smsMessage);
+        
     }
 
     @Override
