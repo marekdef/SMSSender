@@ -36,16 +36,16 @@ public class SendingService extends Service {
         try {
             sendSms(smsMessage);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.d(TAG, "Message not find in database", e);
             smsMessage.deliveryStatus = -110; //error
             smsMessageDao.update(smsMessage);
         }
     }
 
+    public static final String SENT = "SMS_SENT";
+    public static final String DELIVERED = "SMS_DELIVERED";
     public void sendSms(SmsMessage smsMessage) throws Exception{
         try {
-            String SENT = "SMS_SENT";
-            String DELIVERED = "SMS_DELIVERED";
             Intent sendIntent = new Intent(SENT);
             Intent deliveredIntent = new Intent(DELIVERED);
             sendIntent.putExtra(SmsMessage.SMS_ID, smsMessage.id);
@@ -61,15 +61,19 @@ public class SendingService extends Service {
             updateSmsStatusToSending(smsMessage);
             sms.sendTextMessage(smsMessage.number, null, smsMessage.message, sentPI, deliveredPI);
         }catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            Log.d(TAG, "Empty message or number or ... fatal error", e);
             throw new Exception("Sms not send empty body  -111");
 
         }catch (Throwable e) {
-            e.printStackTrace();
+            Log.d(TAG, "Problem witch sending sms", e);
             throw new Exception("Sms not send -110");
         }
     }
 
+    /**
+     * Helper method to save updated state of message.
+     * @param smsMessage
+     */
     private void updateSmsStatusToSending(SmsMessage smsMessage) {
         smsMessage.messageStatus = SmsMessage.STATUS_SENDING;
         smsMessage.dateOfStatus = System.currentTimeMillis();

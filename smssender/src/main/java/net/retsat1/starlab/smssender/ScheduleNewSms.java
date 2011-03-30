@@ -77,7 +77,7 @@ public class ScheduleNewSms extends Activity {
         setAdapterForNumberEditor();
     }
 
-    public static int contactUpdateStatus = 0;
+    protected static int contactUpdateStatus = 0;
 
     public boolean isContactUpdateIsNeed() {
         if (contactUpdateStatus == 0) {
@@ -85,55 +85,54 @@ public class ScheduleNewSms extends Activity {
         }
         return false;
     }
-    private class HashMap2 extends HashMap<String, String>{
-       
+
+    private class ContactContainer extends HashMap<String, String> {
+        /**
+         * SerialID
+         */
+        private static final long serialVersionUID = 1424324242115L;
+
+        /**
+         * Method how to display contact in AutoComplete method 
+         */
         @Override
         public String toString() {
-            return this.get("name") + " <"+this.get("phone")+">"; 
+            return this.get("name") + " <" + this.get("phone") + ">";
         }
     }
-    
+
+    private static final String SELECTION_CONTACT_WITH_NUMBERS = ContactsContract.Contacts.HAS_PHONE_NUMBER + "='1'";
+    private static final String[] PROJECTION_CONTACT_WITH_NUMBERS = new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME,
+            ContactsContract.Contacts.HAS_PHONE_NUMBER, };
+    private static final String CONTACT_NAME = "name";
+    protected static final String CONTACT_PHONE = "phone";
+
     private static SimpleAdapter phoneAdapter;
+
     private void setAdapterForNumberEditor() {
-        if (isContactUpdateIsNeed())
-        progressDialog = ProgressDialog.show(this, "Working..", "Update contacts", true, false);
+        if (isContactUpdateIsNeed()) {
+            progressDialog = ProgressDialog.show(this, "Working..", "Update contacts", true, false);
+        }
         Thread t = new Thread() {
             public void run() {
                 contactUpdateStatus = 1;
-                final ContentResolver content = getContentResolver();
-                String SELECTION = ContactsContract.Contacts.HAS_PHONE_NUMBER + "='1'";
-                String[] PROJECTION = new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME,
-                        ContactsContract.Contacts.HAS_PHONE_NUMBER, };
-                Cursor cursor = content.query(ContactsContract.Contacts.CONTENT_URI, PROJECTION, SELECTION, null, null);
+                Cursor cursor = getAllContactWithNumbers();
                 if (cursor == null) {
                     Log.w(TAG, "No contacts to display");
                 } else {
-                    
-                    ArrayList<HashMap2> phones = new ArrayList<HashMap2>();
-                    phoneAdapter = new SimpleAdapter(ScheduleNewSms.this, phones, R.layout.phone_row_entry, new String[] { "name", "phone" },
+
+                    ArrayList<ContactContainer> phones = new ArrayList<ContactContainer>();
+                    phoneAdapter = new SimpleAdapter(ScheduleNewSms.this, phones, R.layout.phone_row_entry, new String[] { CONTACT_NAME, CONTACT_PHONE },
                             new int[] { R.id.row_display_name, R.id.row_phone_number });
 
                     while (cursor.moveToNext()) {
                         String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                         String displayName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-
-                        String where = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?";// AND " + ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " " ;
-                        String[] selection = new String[] { id };
-                        String[] phoneProjection = new String[] {ContactsContract.CommonDataKinds.Phone.DATA, ContactsContract.CommonDataKinds.Phone.TYPE};
-                        Cursor pCur = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, phoneProjection , where, selection, null);
+                        Cursor pCur = getAllPhoneByContactId(id);
                         Log.d(TAG, "Contact " + id + " how many phone numbers " + pCur.getCount());
                         while (pCur.moveToNext()) {
-                            // Do something with phones
                             String phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA));
-
-                            String phoneType = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
-                            
-                            HashMap2 phoneRow = new HashMap2();
-                            phoneRow.put("name", displayName);
-                            phoneRow.put("phone", phone);
-                            phones.add(phoneRow);
-                            Log.i("Pratik", "PHONE: " + displayName + " <" + phone + "> ");
-                            Log.i("Pratik", "PHONE TYPE: " + phoneType);
+                            addPhoneToList(phone, displayName, phones);
                         }
                         pCur.close();
                     }
@@ -152,11 +151,40 @@ public class ScheduleNewSms extends Activity {
                 ;
 
             }
+
+            /**
+             * Aggregate phones
+             * 
+             * @param phone
+             *            phone number
+             * @param displayName
+             * @param phones
+             *            place where we aggregate phone numbers
+             */
+            private void addPhoneToList(String phone, String displayName, ArrayList<ContactContainer> phones) {
+                ContactContainer phoneRow = new ContactContainer();
+                phoneRow.put("name", displayName);
+                phoneRow.put("phone", phone);
+                phones.add(phoneRow);
+                Log.i("Pratik", "PHONE: " + displayName + " <" + phone + "> ");
+            }
+
+            private Cursor getAllPhoneByContactId(String id) {
+                String[] selection = new String[] { id };
+                String[] phoneProjection = new String[] { ContactsContract.CommonDataKinds.Phone.DATA, ContactsContract.CommonDataKinds.Phone.TYPE };
+                String where = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?";
+                return getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, phoneProjection, where, selection, null);
+            }
+
+            private Cursor getAllContactWithNumbers() {
+                return getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, PROJECTION_CONTACT_WITH_NUMBERS, SELECTION_CONTACT_WITH_NUMBERS, null,
+                        null);
+            }
         };
         if (isContactUpdateIsNeed()) {
             t.start();
-        }else {
-            assert (phoneAdapter== null);
+        } else {
+            assert (phoneAdapter == null);
             Log.d(TAG, "phone adapter " + phoneAdapter);
             numberEditText.setAdapter(phoneAdapter);
         }
