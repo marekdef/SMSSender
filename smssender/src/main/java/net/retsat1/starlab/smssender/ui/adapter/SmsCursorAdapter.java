@@ -27,14 +27,13 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
         this.c = c;
         this.context = context;
         c.setNotificationUri(context.getContentResolver(), SmsMessage.CONTENT_URI);
-        
+
     }
 
     @Override
     public synchronized View newView(Context context, Cursor cursor, ViewGroup parent) {
         LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = li.inflate(R.layout.list_item, parent, false);
-        
         CheckBox cb = (CheckBox) v.findViewById(R.id.checked);
         Integer id = cursor.getInt(cursor.getColumnIndex(SmsMessage.SMS_ID));
         Log.d(TAG, "newView ID=" + id + " checked= " + cb.isChecked());
