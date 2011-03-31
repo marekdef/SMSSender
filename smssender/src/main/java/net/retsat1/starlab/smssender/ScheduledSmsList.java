@@ -23,10 +23,8 @@ public class ScheduledSmsList extends Activity {
         setContentView(R.layout.list);
         smsListView = (ListView) findViewById(R.id.smsList);
         Cursor c = managedQuery(SmsMessage.CONTENT_URI, null, null, null, null);
-        String[] valuePosition = { SmsMessage.RECEIVER, SmsMessage.MESSAGE, SmsMessage.MESSAGE_STATUS };
-        int[] uiPosition = { R.id.numberText, R.id.messageText, R.id.stat };
 
-        adapter = new SmsCursorAdapter(this, R.layout.list_item, c, valuePosition, uiPosition);
+        adapter = new SmsCursorAdapter(this, R.layout.list_item, c);
         smsListView.setAdapter(adapter);
 
     }

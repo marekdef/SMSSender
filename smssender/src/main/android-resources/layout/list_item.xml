@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
-	android:orientation="horizontal"
-	>
-
-	<CheckBox android:id="@+id/checked" android:checked="false"
-		android:paddingRight="2px" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" />
-	<LinearLayout android:orientation="vertical"
-		android:layout_width="wrap_content" android:layout_height="wrap_content">
-		<TextView android:id="@+id/stat" android:text="@string/status_not_sent"
+	android:orientation="vertical">
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="wrap_content" android:layout_height="wrap_content" >
+		>
+		<CheckBox android:id="@+id/checked" android:checked="false"
 			android:paddingRight="2px" android:layout_width="wrap_content"
 			android:layout_height="wrap_content" />
+		<LinearLayout android:orientation="vertical"
+			android:layout_width="wrap_content" android:layout_height="wrap_content">
+			<TextView android:id="@+id/numberText" android:layout_width="wrap_content"
+				android:layout_height="wrap_content">
+			</TextView>
+			<TextView android:id="@+id/messageText" android:ellipsize="start"
+				android:maxLines="1" android:layout_width="wrap_content"
+				android:layout_height="wrap_content"></TextView>
+		</LinearLayout>
+		<TextView android:id="@+id/timeText" android:text="1d 12:33:42"
+				android:layout_width="wrap_content" android:width="100px"
+				android:layout_height="wrap_content" ></TextView>
 	</LinearLayout>
-	<LinearLayout android:orientation="vertical"
-		android:layout_width="wrap_content" android:layout_height="wrap_content">
-		<TextView android:id="@+id/numberText" android:layout_width="wrap_content"
-			android:layout_height="wrap_content">
-		</TextView>
-		<TextView android:id="@+id/messageText" android:ellipsize="start"
-			android:maxLines="1" android:layout_width="wrap_content"
-			android:layout_height="wrap_content"></TextView>
-	</LinearLayout>
+	<TextView android:id="@+id/stat" android:text="@string/status_not_sent"
+		android:paddingRight="2px" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
 </LinearLayout>

@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 
 import net.retsat1.starlab.android.timepicker.DetailedTimePicker;
+import net.retsat1.starlab.smssender.dao.PhoneContactDao;
+import net.retsat1.starlab.smssender.dao.PhoneContactDaoImpl;
 import net.retsat1.starlab.smssender.dao.SmsMessageDao;
 import net.retsat1.starlab.smssender.dao.SmsMessageDaoImpl;
 import net.retsat1.starlab.smssender.dto.SmsMessage;
@@ -30,7 +33,7 @@ import android.widget.EditText;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-public class ScheduleNewSms extends Activity {
+public class ScheduleNewSms extends Activity implements OnClickListener {
     private static final String TAG = ScheduleNewSms.class.getSimpleName();
 
     private Button sendButton;
@@ -47,11 +50,11 @@ public class ScheduleNewSms extends Activity {
 
     private ProgressDialog progressDialog;
 
+    private PhoneContactDao phoneContactDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate");
-
         setContentView(R.layout.schedule);
         numberValidator = new NumberHighPaidValidator();
         datePicker = (DatePicker) findViewById(R.id.dataPicker);
@@ -59,17 +62,9 @@ public class ScheduleNewSms extends Activity {
         numberEditText = (AutoCompleteTextView) findViewById(R.id.numberEditText);
         messageEditText = (EditText) findViewById(R.id.messageEditText);
         sendButton = (Button) findViewById(R.id.send_button);
-        sendButton.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                String number = numberEditText.getText().toString();
-                String message = messageEditText.getText().toString();
-
-                addMessageToSend(number, message);
-            }
-        });
+        sendButton.setOnClickListener(this);
         smsMessageDao = new SmsMessageDaoImpl(this);
+        phoneContactDao = new PhoneContactDaoImpl(this);
         setAdapterForNumberEditor();
     }
 
@@ -109,10 +104,12 @@ public class ScheduleNewSms extends Activity {
         if (isContactUpdateIsNeed()) {
             progressDialog = ProgressDialog.show(this, "Working..", "Update contacts", true, false);
         }
+
         Thread t = new Thread() {
             public void run() {
                 contactUpdateStatus = 1;
                 Cursor cursor = getAllContactWithNumbers();
+
                 if (cursor == null) {
                     Log.w(TAG, "No contacts to display");
                 } else {
@@ -132,15 +129,14 @@ public class ScheduleNewSms extends Activity {
                         }
                         pCur.close();
                     }
+                    cursor.close();
                     ScheduleNewSms.this.runOnUiThread(new Runnable() {
-
                         @Override
                         public void run() {
                             Log.d(TAG, "numberEditText setAdapter ");
                             numberEditText.setAdapter(phoneAdapter);
                             progressDialog.dismiss();
                             contactUpdateStatus = 2;
-                            Log.d(TAG, "two");
                         }
                     });
                 }
@@ -193,11 +189,11 @@ public class ScheduleNewSms extends Activity {
     private void addMessageToSend(String number, String message) {
         logTime();
         Log.d(TAG, "sendMessage number " + number + " message " + message);
-        idCode++;
         if (numberValidator.isValid(number)) {
             Toast.makeText(this, getResources().getString(R.string.this_sms_is_paid), 2000).show();
             return;
         }
+        idCode++;
         long timeNow = System.currentTimeMillis();
         long scheduledTimeMillis = getSetupTime();
         int reqCode = (int) ((timeNow - DATE_27_III_2011) + idCode);
@@ -216,7 +212,6 @@ public class ScheduleNewSms extends Activity {
         smsMessage.dateOfStatus = System.currentTimeMillis();
         smsMessage.messageStatus = SmsMessage.STATUS_UNSENT;
         smsMessage.deliveryStatus = SmsMessage.STATUS_UNSENT;
-
         return smsMessage;
     }
 
@@ -225,9 +220,7 @@ public class ScheduleNewSms extends Activity {
         Log.d(TAG, "Data when" + smsMessage.deliveryDate);
         Intent intent = new Intent(this, SendingService.class);
         intent.putExtra(SmsMessage.SMS_ID, smsMessage.id);
-
         PendingIntent pendingIntent = PendingIntent.getService(this, smsMessage.id, intent, PendingIntent.FLAG_ONE_SHOT);
-
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, smsMessage.deliveryDate, pendingIntent);
 
@@ -248,6 +241,19 @@ public class ScheduleNewSms extends Activity {
         Log.d(TAG, "hh: " + timePicker.getCurrentHour());
         Log.d(TAG, "mm: " + timePicker.getCurrentMinute());
         Log.d(TAG, "ss: " + timePicker.getCurrentSecond());
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+        case R.id.send_button:
+            String number = numberEditText.getText().toString();
+            String message = messageEditText.getText().toString();
+            addMessageToSend(number, message);
+            break;
+        default:
+            throw new NoSuchElementException("This exception should never be call, please define all menu button");
+        }
     }
 
 }

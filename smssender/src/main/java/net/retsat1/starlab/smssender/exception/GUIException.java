@@ -1,9 +1,11 @@
 package net.retsat1.starlab.smssender.exception;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.retsat1.starlab.smssender.R;
 import android.content.Context;
+import android.util.Log;
 
 /**
  * This is exception which can't be resolved, We can only notifi user that this
@@ -14,9 +16,10 @@ import android.content.Context;
  */
 public class GUIException extends Exception {
     // This be more
-    public static int ERROR_DELIVERY_STATUS_GENERAL = -110;
+    public final static int ERROR_DELIVERY_STATUS_GENERAL = -110;
     // Mapping between error code and messages
-    public static HashMap<Integer, Integer> i18nErrorMapping = null;
+    private final static Map<Integer, Integer> i18nErrorMapping;
+    private static final String TAG = "GUIException";
     static {
         i18nErrorMapping = new HashMap<Integer, Integer>();
         i18nErrorMapping.put(ERROR_DELIVERY_STATUS_GENERAL, R.string.dialog_alert_title);
@@ -33,6 +36,7 @@ public class GUIException extends Exception {
     @Override
     public String getMessage() {
         String message = context.getApplicationContext().getString(i18nErrorMapping.get(bugID));
+        Log.e(TAG, message);
         return message;
     }
 }
