@@ -148,8 +148,10 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
             break;
         case SmsMessage.STATUS_SENDING:
             status += "Message sending";
+            break;
         case Activity.RESULT_OK:
             status += "Message send OK";
+            break;
         case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
             status += "Message generic error";
             break;

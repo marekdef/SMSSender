@@ -77,7 +77,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         return false;
     }
 
-    private class ContactContainer extends HashMap<String, String> {
+    private static class ContactContainer extends HashMap<String, String> {
         /**
          * SerialID
          */
