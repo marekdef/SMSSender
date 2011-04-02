@@ -31,7 +31,7 @@ public class SmsStatusDeliveredReceiver extends BroadcastReceiver {
         Log.d(TAG, "smsId() " + smsId);
         updateSmsStatus(context, smsId, resultCode);
         Resources res = context.getResources();
-        switch (getResultCode()) {
+        switch (resultCode) {
         case Activity.RESULT_OK:
             Toast.makeText(context, res.getString(R.string.sms_delivered), Toast.LENGTH_SHORT).show();
             break;
@@ -48,6 +48,7 @@ public class SmsStatusDeliveredReceiver extends BroadcastReceiver {
     private void updateSmsStatus(Context context, int smsId, int resultCode) {
         smsMessageDao = new SmsMessageDaoImpl(context);
         SmsMessage smsMessage = smsMessageDao.searchByID(smsId);
+        Log.d(TAG, "Sms message found " + smsMessage.messageStatus);
         smsMessage.deliveryStatus = resultCode;
         smsMessageDao.update(smsMessage);
     }

@@ -72,6 +72,11 @@ public class SmsMessageDaoImpl implements SmsMessageDao {
             smsMessage.id = smsId;
             smsMessage.message = c.getString(c.getColumnIndex(SmsMessage.MESSAGE));
             smsMessage.number = c.getString(c.getColumnIndex(SmsMessage.RECEIVER));
+            smsMessage.deliveryDate = c.getLong(c.getColumnIndex(SmsMessage.DELIVERY_DATE));
+            smsMessage.deliveryStatus = c.getInt(c.getColumnIndex(SmsMessage.DELIVERY_STATUS));
+            smsMessage.messageStatus = c.getInt(c.getColumnIndex(SmsMessage.MESSAGE_STATUS));
+            smsMessage.dateOfSetup = c.getLong(c.getColumnIndex(SmsMessage.SETUP_DATE));
+            smsMessage.dateOfStatus = c.getLong(c.getColumnIndex(SmsMessage.STATUS_DATE));
             c.close();
         }
         return smsMessage;

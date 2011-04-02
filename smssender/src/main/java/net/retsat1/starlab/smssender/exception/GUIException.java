@@ -20,9 +20,11 @@ public class GUIException extends Exception {
     // Mapping between error code and messages
     private final static Map<Integer, Integer> i18nErrorMapping;
     private static final String TAG = "GUIException";
+    public static final int ERROR_DELIVERY_EMPTY_MESSAGE = -111;
     static {
         i18nErrorMapping = new HashMap<Integer, Integer>();
         i18nErrorMapping.put(ERROR_DELIVERY_STATUS_GENERAL, R.string.dialog_alert_title);
+        i18nErrorMapping.put(ERROR_DELIVERY_EMPTY_MESSAGE, R.string.dialog_empty_message);
     }
 
     private int bugID;

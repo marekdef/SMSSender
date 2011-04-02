@@ -3,6 +3,7 @@ package net.retsat1.starlab.smssender.service;
 import net.retsat1.starlab.smssender.dao.SmsMessageDao;
 import net.retsat1.starlab.smssender.dao.SmsMessageDaoImpl;
 import net.retsat1.starlab.smssender.dto.SmsMessage;
+import net.retsat1.starlab.smssender.exception.GUIException;
 import net.retsat1.starlab.smssender.receiver.SmsStatusDeliveredReceiver;
 import net.retsat1.starlab.smssender.receiver.SmsStatusSendReceiver;
 import android.app.NotificationManager;
@@ -45,7 +46,7 @@ public class SendingService extends Service {
     public static final String SENT = "SMS_SENT";
     public static final String DELIVERED = "SMS_DELIVERED";
 
-    public void sendSms(SmsMessage smsMessage) throws Exception {
+    public void sendSms(SmsMessage smsMessage) throws GUIException {
         try {
             Intent sendIntent = new Intent(SENT);
             Intent deliveredIntent = new Intent(DELIVERED);
@@ -53,7 +54,7 @@ public class SendingService extends Service {
             deliveredIntent.putExtra(SmsMessage.SMS_ID, smsMessage.id);
             PendingIntent sentPI = PendingIntent.getBroadcast(this, smsMessage.id, sendIntent, 0);
 
-            PendingIntent deliveredPI = PendingIntent.getBroadcast(this, smsMessage.id, deliveredIntent, 0);
+            PendingIntent deliveredPI = PendingIntent.getBroadcast(this, smsMessage.id / 2, deliveredIntent, 0);
             // when the SMS has been sent---
             this.registerReceiver(new SmsStatusSendReceiver(), new IntentFilter(SENT));
             // when the SMS has been delivered---
@@ -63,11 +64,11 @@ public class SendingService extends Service {
             sms.sendTextMessage(smsMessage.number, null, smsMessage.message, sentPI, deliveredPI);
         } catch (IllegalArgumentException e) {
             Log.d(TAG, "Empty message or number or ... fatal error", e);
-            throw new Exception("Sms not send empty body  -111");
+            throw new GUIException(getApplicationContext(), GUIException.ERROR_DELIVERY_EMPTY_MESSAGE);
 
         } catch (Throwable e) {
             Log.d(TAG, "Problem witch sending sms", e);
-            throw new Exception("Sms not send -110");
+            throw new GUIException(getApplicationContext(), GUIException.ERROR_DELIVERY_STATUS_GENERAL);
         }
     }
 

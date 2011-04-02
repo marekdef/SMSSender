@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent" android:id="@+id/topLayaout">
-		
-	<ListView android:id="@+id/smsList" android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_weight="2"/>
-	<TextView android:paddingTop="5px" android:gravity="bottom" android:id="@+id/info" android:layout_height="wrap_content" android:text="@string/help_descriptor" android:layout_width="match_parent" android:layout_gravity="bottom" android:layout_weight="0"></TextView>
-</LinearLayout>

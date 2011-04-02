@@ -3,7 +3,10 @@ package net.retsat1.starlab.smssender.ui.adapter;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.retsat1.starlab.smssender.R;
+import net.retsat1.starlab.smssender.dao.SmsMessageDao;
+import net.retsat1.starlab.smssender.dao.SmsMessageDaoImpl;
 import net.retsat1.starlab.smssender.dto.SmsMessage;
+import net.retsat1.starlab.smssender.utils.DateUtils;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
@@ -29,6 +32,7 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
     static int[] uiPosition = { R.id.numberText, R.id.messageText, R.id.stat };
     private int[] mFrom;
     private LayoutInflater li;
+    private SmsMessageDao smsMessageDao;
 
     public SmsCursorAdapter(Context context, int layout, Cursor c) {
         super(context, layout, c, valuePosition, uiPosition);
@@ -37,6 +41,7 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
         findColumns(valuePosition);
         li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         c.setNotificationUri(context.getContentResolver(), SmsMessage.CONTENT_URI);
+        smsMessageDao = new SmsMessageDaoImpl(context);
 
     }
 
@@ -64,7 +69,6 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
 
     @Override
     public synchronized View newView(Context context, Cursor cursor, ViewGroup parent) {
-        LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = li.inflate(R.layout.list_item, parent, false);
         CheckBox cb = (CheckBox) v.findViewById(R.id.checked);
         Integer id = cursor.getInt(cursor.getColumnIndex(SmsMessage.SMS_ID));
@@ -123,21 +127,35 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
         Log.d(TAG, "v = " + " convertView = " + convertView);
         v = super.getView(position, convertView, parent);
         this.c.moveToPosition(position);
-        Integer id = this.c.getInt(this.c.getColumnIndex(SmsMessage.SMS_ID));
-        Integer messageStatus = this.c.getInt(this.c.getColumnIndex(SmsMessage.MESSAGE_STATUS));
-        Integer deliveryStatus = this.c.getInt(this.c.getColumnIndex(SmsMessage.DELIVERY_STATUS));
+
+        int id = this.c.getInt(this.c.getColumnIndex(SmsMessage.SMS_ID));
+        SmsMessage smsMessage = smsMessageDao.searchByID(id);
         TextView statusTextView = (TextView) v.findViewById(R.id.stat);
-        Log.d(TAG, "messageStatus " + messageStatus + " deliveryStatus " + deliveryStatus);
-        String text = getStatusText(messageStatus, deliveryStatus);
-        statusTextView.setText(text);
-        Log.d(TAG, "IDID = " + id + "text " + text);
+        String status = getStatusText(smsMessage.messageStatus, smsMessage.deliveryStatus);
+        Log.d(TAG, "smsMessage.deliveryDate  " + smsMessage.deliveryDate + " SS= " + System.currentTimeMillis());
+        String counting = getCountDownTime(smsMessage);
+        statusTextView.setText(status + " " + counting);
+        setCheckBoxState(v, id);
+        Log.d(TAG, "position " + position);
+        return v;
+    }
+
+    private String getCountDownTime(SmsMessage smsMessage) {
+        String countDown = " ";
+        if (smsMessage.messageStatus == SmsMessage.STATUS_UNSENT) {
+            long time = (smsMessage.deliveryDate - System.currentTimeMillis()) / 1000;
+            countDown = DateUtils.changeSecToNiceDate(time);
+        }
+        return countDown;
+    }
+
+    private void setCheckBoxState(View v, int id) {
         CheckBox cBox = (CheckBox) v.findViewById(R.id.checked);
         cBox.setTag(id);
         cBox.setOnCheckedChangeListener(this);
         boolean b = checkList.contains(id);
         cBox.setChecked(b);
-        Log.d(TAG, "position " + position);
-        return v;
+
     }
 
     private String getStatusText(Integer messageStatus, Integer deliveryStatus) {
@@ -167,12 +185,13 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
         default:
             status += "Message unknown status";
         }
-        status += "||";
+        status += "|";
         switch (deliveryStatus) {
         case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
             status += "General raport failure";
             break;
         case Activity.RESULT_OK:
+            status += "Delivered";
             break;
         default:
             status += "delivery status unknown";
@@ -212,8 +231,7 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
         if (getCount() > 0) {
             c.moveToFirst();
             do {
-                Integer id = c.getInt(c.getColumnIndex(SmsMessage.SMS_ID)); // crashes
-                                                                            // here
+                Integer id = c.getInt(c.getColumnIndex(SmsMessage.SMS_ID));
                 checkList.add(id);
             } while (c.moveToNext());
             notifyDataSetInvalidated();

@@ -141,7 +141,6 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
                     });
                 }
                 ;
-
             }
 
             /**
@@ -184,7 +183,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
 
     private static int idCode = 0;
 
-    private long DATE_27_III_2011 = 1301258571993L;
+    private static final long DATE_27_III_2011 = 1301258571993L;
 
     private void addMessageToSend(String number, String message) {
         logTime();
