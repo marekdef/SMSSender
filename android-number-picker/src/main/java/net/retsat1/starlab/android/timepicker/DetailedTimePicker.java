@@ -10,6 +10,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -76,14 +77,17 @@ public class DetailedTimePicker extends LinearLayout implements OnChangedListene
 
     public DetailedTimePicker(Context context, AttributeSet attrs) {
         super(context, attrs);
-
+        Log.d(TAG, "DetailedTimePicker ");
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         inflater.inflate(R.layout.detailed_time_picker, this, true);
 
         mHourPicker = (NumberPicker) findViewById(R.id.hour);
+        mHourPicker.setFormatter(NumberPicker.TWO_DIGIT_FORMATTER);
         mMinutePicker = (NumberPicker) findViewById(R.id.minute);
+        mMinutePicker.setFormatter(NumberPicker.TWO_DIGIT_FORMATTER);
         mSecondPicker = (NumberPicker) findViewById(R.id.second);
+        mSecondPicker.setFormatter(NumberPicker.TWO_DIGIT_FORMATTER);
         mHourPicker.setOnChangeListener(this);
         mMinutePicker.setOnChangeListener(this);
         mSecondPicker.setOnChangeListener(this);
@@ -158,6 +162,15 @@ public class DetailedTimePicker extends LinearLayout implements OnChangedListene
      */
     public Integer getCurrentHour() {
         return mCurrentHour;
+    }
+
+    /**
+     * Override so we are in complete control of save / restore for this widget.
+     */
+    @Override
+    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
+        Log.d(TAG, "dispatchRestoreInstanceState");
+        dispatchThawSelfOnly(container);
     }
 
     /**
@@ -265,19 +278,28 @@ public class DetailedTimePicker extends LinearLayout implements OnChangedListene
     }
 
     @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        Log.d(TAG, "onSizeChanged w= " + w + " h=" + h + " oldw=" + oldw + " oldh= " + oldh);
+        super.onSizeChanged(w, h, oldw, oldh);
+    }
+
+    @Override
     protected Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
 
+        Log.d(TAG, "onSaveInstanceState " + mCurrentHour);
         return new SavedState(superState, mCurrentHour, mCurrentMinute, mCurrentSecond);
     }
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
+        Log.d(TAG, "onRestoreInstanceState ");
         SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
         mCurrentHour = ss.getHour();
         mCurrentMinute = ss.getMinute();
         mCurrentSecond = ss.getSecound();
+        Log.d(TAG, "onRestoreInstanceState mCurrentHour " + mCurrentHour + " mCurrentMinute " + mCurrentMinute + " mCurrentSecond " + mCurrentSecond);
         updateSpinners();
     }
 
