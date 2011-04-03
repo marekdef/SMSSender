@@ -131,10 +131,12 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
         int id = this.c.getInt(this.c.getColumnIndex(SmsMessage.SMS_ID));
         SmsMessage smsMessage = smsMessageDao.searchByID(id);
         TextView statusTextView = (TextView) v.findViewById(R.id.stat);
+        TextView countDownTextView = (TextView) v.findViewById(R.id.timeText);
         String status = getStatusText(smsMessage.messageStatus, smsMessage.deliveryStatus);
         Log.d(TAG, "smsMessage.deliveryDate  " + smsMessage.deliveryDate + " SS= " + System.currentTimeMillis());
         String counting = getCountDownTime(smsMessage);
-        statusTextView.setText(status + " " + counting);
+        countDownTextView.setText(counting);
+        statusTextView.setText(status);
         setCheckBoxState(v, id);
         Log.d(TAG, "position " + position);
         return v;
