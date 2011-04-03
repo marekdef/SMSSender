@@ -6,11 +6,14 @@ import java.util.TimeZone;
 
 import net.retsat1.starlab.android.timepicker.NumberPicker.OnChangedListener;
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
 /**
@@ -259,6 +262,87 @@ public class DetailedTimePicker extends LinearLayout implements OnChangedListene
         default:
             throw new IllegalStateException();
         }
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+
+        return new SavedState(superState, mCurrentHour, mCurrentMinute, mCurrentSecond);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
+        mCurrentHour = ss.getHour();
+        mCurrentMinute = ss.getMinute();
+        mCurrentSecond = ss.getSecound();
+        updateSpinners();
+    }
+
+    private void updateSpinners() {
+        setCurrentHour(mCurrentHour);
+        setCurrentMinute(mCurrentMinute);
+        setCurrentSecond(mCurrentSecond);
+    }
+
+    private static class SavedState extends BaseSavedState {
+
+        private final int mCurrentHour;
+        private final int mCurrentMinute;
+        private final int mCurrentSecound;
+
+        /**
+         * Constructor called from {@link DatePicker#onSaveInstanceState()}
+         */
+        private SavedState(Parcelable superState, int hour, int minute, int secound) {
+            super(superState);
+            mCurrentHour = hour;
+            mCurrentMinute = minute;
+            mCurrentSecound = secound;
+        }
+
+        /**
+         * Constructor called from {@link #CREATOR}
+         */
+        private SavedState(Parcel in) {
+            super(in);
+            mCurrentHour = in.readInt();
+            mCurrentMinute = in.readInt();
+            mCurrentSecound = in.readInt();
+        }
+
+        public int getHour() {
+            return mCurrentHour;
+        }
+
+        public int getMinute() {
+            return mCurrentMinute;
+        }
+
+        public int getSecound() {
+            return mCurrentSecound;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeInt(mCurrentHour);
+            dest.writeInt(mCurrentMinute);
+            dest.writeInt(mCurrentSecound);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR = new Creator<SavedState>() {
+
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
     }
 
 }
