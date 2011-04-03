@@ -17,5 +17,6 @@
     <string name="dialog_alert_title">SmsSender</string>
     <string name="help_descriptor">Press Menu, New Sms to add task</string>
     <string name="dialog_empty_message">You tried send empty message or without phone number</string>
-    <string name="no_items">Press Menu, New Sms to add new task</string>
+    <string name="no_items">Press Menu, New sms to add new task</string>
+    <string name="provide_number">Provide sms number</string>
 </resources>

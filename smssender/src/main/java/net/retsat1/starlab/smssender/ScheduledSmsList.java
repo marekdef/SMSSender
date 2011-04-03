@@ -36,8 +36,21 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener {
         adapter = new SmsCursorAdapter(this, R.layout.list_item, c);
         getListView().setAdapter(adapter);
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        refreshListForEverySecound();
+    }
 
+    @Override
+    protected void onResume() {
+        refreshListForEverySecound();
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause ");
+        timer.cancel();
+        timer.purge();
+        timer = null;
     }
 
     private void refreshListForEverySecound() {

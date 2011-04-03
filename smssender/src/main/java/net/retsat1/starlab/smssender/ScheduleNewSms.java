@@ -13,6 +13,7 @@ import net.retsat1.starlab.smssender.dao.SmsMessageDao;
 import net.retsat1.starlab.smssender.dao.SmsMessageDaoImpl;
 import net.retsat1.starlab.smssender.dto.SmsMessage;
 import net.retsat1.starlab.smssender.service.SendingService;
+import net.retsat1.starlab.smssender.validators.LenghtNumberValidator;
 import net.retsat1.starlab.smssender.validators.NumberHighPaidValidator;
 import net.retsat1.starlab.smssender.validators.NumberValidator;
 import android.app.Activity;
@@ -47,17 +48,21 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
 
     private EditText messageEditText;
     private NumberValidator numberValidator;
+    private NumberValidator lenghtNumberValidator;
     private SmsMessageDao smsMessageDao;
 
     private ProgressDialog progressDialog;
 
     private PhoneContactDao phoneContactDao;
+    private static boolean created = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.schedule);
         numberValidator = new NumberHighPaidValidator();
+        lenghtNumberValidator = new LenghtNumberValidator();
         datePicker = (DatePicker) findViewById(R.id.dataPicker);
         timePicker = (DetailedTimePicker) findViewById(R.id.detailedTimePicker);
         numberEditText = (AutoCompleteTextView) findViewById(R.id.numberEditText);
@@ -67,6 +72,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         smsMessageDao = new SmsMessageDaoImpl(this);
         phoneContactDao = new PhoneContactDaoImpl(this);
         setAdapterForNumberEditor();
+
     }
 
     protected static int contactUpdateStatus = 0;
@@ -199,6 +205,10 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
             Toast.makeText(this, getResources().getString(R.string.this_sms_is_paid), 2000).show();
             return;
         }
+        if (!lenghtNumberValidator.isValid(number)) {
+            Toast.makeText(this, getResources().getString(R.string.provide_number), Toast.LENGTH_SHORT).show();
+            return;
+        }
         idCode++;
         long timeNow = System.currentTimeMillis();
         long scheduledTimeMillis = getSetupTime();
@@ -206,6 +216,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         SmsMessage smsMessage = createNewMessage(reqCode, number, message, scheduledTimeMillis);
         smsMessageDao.insert(smsMessage);
         alarmSetup(smsMessage);
+        finish();
     }
 
     private SmsMessage createNewMessage(int reqCode, String number, String message, long scheduledTimeMillis) {
@@ -229,7 +240,6 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         PendingIntent pendingIntent = PendingIntent.getService(this, smsMessage.id, intent, PendingIntent.FLAG_ONE_SHOT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, smsMessage.deliveryDate, pendingIntent);
-
     }
 
     private long getSetupTime() {

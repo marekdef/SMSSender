@@ -6,9 +6,13 @@ import net.retsat1.starlab.smssender.R;
 import net.retsat1.starlab.smssender.dao.SmsMessageDao;
 import net.retsat1.starlab.smssender.dao.SmsMessageDaoImpl;
 import net.retsat1.starlab.smssender.dto.SmsMessage;
+import net.retsat1.starlab.smssender.service.SendingService;
 import net.retsat1.starlab.smssender.utils.DateUtils;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -204,18 +208,24 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
     }
 
     public void deleteAllCheckedItems() {
-
-        String where = SmsMessage.SMS_ID + " =?";
         if (!checkList.isEmpty()) {
             for (Integer id : checkList) {
                 Log.d(TAG, "Delete " + id);
-                String[] args = new String[] { "" + id };
-                context.getContentResolver().delete(SmsMessage.CONTENT_URI, where, args);
+                cancelAlarm(id);
+                smsMessageDao.delete(id);
                 checkList.remove(id);
             }
         }
         notifyDataSetInvalidated();
         notifyDataSetChanged();
+    }
+
+    private void cancelAlarm(Integer id) {
+        Intent intent = new Intent(context, SendingService.class);
+        intent.putExtra(SmsMessage.SMS_ID, id);
+        PendingIntent pendingIntent = PendingIntent.getService(context, id, intent, PendingIntent.FLAG_ONE_SHOT);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
     }
 
     @Override
@@ -230,6 +240,7 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
     }
 
     public void selectAllItems() {
+        Log.d(TAG, "selectAllItems");
         if (getCount() > 0) {
             c.moveToFirst();
             do {

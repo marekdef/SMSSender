@@ -14,16 +14,17 @@ public class DateUtils {
 
     public static String changeSecToNiceDate(long time) {
         if (time < NUMBER_OF_SEC_FOR_MIN) {
-            return getSec(time) + STRING_SECOUND;
+            int sec = getSec(time);
+            return formatTo2Digits(sec);
         } else if (time < NUMBER_OF_SEC_FOR_HOUR) {
             int min = getMin(time);
             int sec = getSec(time);
-            return min + STRING_MINUTE + sec + STRING_SECOUND;
+            return formatTo2Digits(min) + STRING_MINUTE + formatTo2Digits(sec) + STRING_SECOUND;
         } else if (time < NUMBER_OF_SEC_FOR_DAY) {
             int h = getHour(time);
             int min = getMin(time);
             int sec = getSec(time);
-            return h + STRING_HOUR + min + STRING_MINUTE + sec + STRING_SECOUND;
+            return formatTo2Digits(h) + STRING_HOUR + formatTo2Digits(min) + STRING_MINUTE + formatTo2Digits(sec) + STRING_SECOUND;
         } else if (time < NUMBER_OF_SEC_FOR_YEAR) {
             int d = getDay(time);
             int h = getHour(time);
@@ -38,6 +39,13 @@ public class DateUtils {
             int sec = getSec(time);
             return y + STRING_YEAR + d + STRING_DAY + h + STRING_HOUR + min + STRING_MINUTE + sec + STRING_SECOUND;
         }
+    }
+
+    private static String formatTo2Digits(int number) {
+        if (number < 10) {
+            return "0" + number;
+        }
+        return number + "";
     }
 
     private static int getYear(long time) {

@@ -19,8 +19,10 @@ public class SmsMessageDaoImpl implements SmsMessageDao {
 
     @Override
     public boolean delete(SmsMessage smsMessage) {
-
-        return false;
+        String[] args = new String[] { "" + smsMessage.id };
+        String where = SmsMessage.SMS_ID + " =?";
+        mContext.getContentResolver().delete(SmsMessage.CONTENT_URI, where, args);
+        return true;
     }
 
     @Override
@@ -80,6 +82,13 @@ public class SmsMessageDaoImpl implements SmsMessageDao {
             c.close();
         }
         return smsMessage;
+    }
+
+    @Override
+    public void delete(int id) {
+        String[] args = new String[] { "" + id };
+        String where = SmsMessage.SMS_ID + " =?";
+        mContext.getContentResolver().delete(SmsMessage.CONTENT_URI, where, args);
     }
 
 }

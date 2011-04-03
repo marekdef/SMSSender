@@ -12,4 +12,6 @@ public interface SmsMessageDao {
 
     public SmsMessage searchByID(int smsId);
 
+    public void delete(int id);
+
 }
