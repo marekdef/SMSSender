@@ -1,6 +1,8 @@
 package net.retsat1.starlab.smssender.ui.adapter;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import net.retsat1.starlab.smssender.R;
 import net.retsat1.starlab.smssender.dao.SmsMessageDao;
@@ -31,7 +33,7 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
     private static final String TAG = "SmsCursorAdapter";
     private Cursor c;
     private Context context;
-    private ConcurrentLinkedQueue<Integer> checkList = new ConcurrentLinkedQueue<Integer>();
+    private Set<Integer> checkList = Collections.synchronizedSet(new HashSet<Integer>());
     static String[] valuePosition = { SmsMessage.RECEIVER, SmsMessage.MESSAGE, SmsMessage.MESSAGE_STATUS };
     static int[] uiPosition = { R.id.numberText, R.id.messageText, R.id.stat };
     private int[] mFrom;
@@ -159,8 +161,10 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
         CheckBox cBox = (CheckBox) v.findViewById(R.id.checked);
         cBox.setTag(id);
         cBox.setOnCheckedChangeListener(this);
-        boolean b = checkList.contains(id);
-        cBox.setChecked(b);
+        synchronized (checkList) {
+            boolean b = checkList.contains(id);
+            cBox.setChecked(b);
+        }
 
     }
 
@@ -208,14 +212,15 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
     }
 
     public void deleteAllCheckedItems() {
+
         if (!checkList.isEmpty()) {
-            for (Integer id : checkList) {
-                Log.d(TAG, "Delete " + id);
+            Set<Integer> list1 = Collections.unmodifiableSet(checkList);
+            for (Integer id : list1) {
                 cancelAlarm(id);
                 smsMessageDao.delete(id);
-                checkList.remove(id);
             }
         }
+        checkList.clear();
         notifyDataSetInvalidated();
         notifyDataSetChanged();
     }
@@ -231,12 +236,14 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         Log.d(TAG, "TAG " + buttonView.getTag());
-        if (isChecked) {
-            checkList.add((Integer) buttonView.getTag());
-        } else {
-            checkList.remove((Integer) buttonView.getTag());
+        synchronized (checkList) {
+            if (isChecked) {
+                checkList.add((Integer) buttonView.getTag());
+            } else {
+                checkList.remove((Integer) buttonView.getTag());
+            }
         }
-        Log.d(TAG, "checkList " + checkList.size());
+
     }
 
     public void selectAllItems() {
@@ -245,7 +252,9 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
             c.moveToFirst();
             do {
                 Integer id = c.getInt(c.getColumnIndex(SmsMessage.SMS_ID));
-                checkList.add(id);
+                synchronized (checkList) {
+                    checkList.add(id);
+                }
             } while (c.moveToNext());
             notifyDataSetInvalidated();
             notifyDataSetChanged();

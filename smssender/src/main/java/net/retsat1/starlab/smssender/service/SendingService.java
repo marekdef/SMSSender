@@ -6,7 +6,6 @@ import net.retsat1.starlab.smssender.dto.SmsMessage;
 import net.retsat1.starlab.smssender.exception.GUIException;
 import net.retsat1.starlab.smssender.receiver.SmsStatusDeliveredReceiver;
 import net.retsat1.starlab.smssender.receiver.SmsStatusSendReceiver;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
@@ -20,11 +19,15 @@ import android.util.Log;
 
 public class SendingService extends Service {
     private static final String TAG = SendingService.class.getSimpleName();
-    private NotificationManager notificationManager;
     private SmsMessageDao smsMessageDao;
 
     @Override
     public void onStart(Intent intent, int startId) {
+        if (intent == null) {
+            return;
+        }
+        Log.d(TAG, "intent " + intent + " startId  " + startId);
+        Log.d(TAG, "Extras " + intent.getExtras());
         int smsId = intent.getExtras().getInt(SmsMessage.SMS_ID);
         Log.d(TAG, "onStart " + startId + " smsId " + smsId + intent.describeContents());
         super.onStart(intent, startId);
@@ -93,7 +96,6 @@ public class SendingService extends Service {
     @Override
     public void onCreate() {
         Log.d(TAG, "SendingService.onCreate()");
-        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         smsMessageDao = new SmsMessageDaoImpl(this);
         super.onCreate();
     }

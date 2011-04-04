@@ -5,6 +5,7 @@ import java.util.TimerTask;
 
 import net.retsat1.starlab.smssender.dto.SmsMessage;
 import net.retsat1.starlab.smssender.ui.adapter.SmsCursorAdapter;
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,11 +16,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 
-public class ScheduledSmsList extends ListActivity implements OnClickListener {
+public class ScheduledSmsList extends ListActivity implements OnClickListener, OnItemClickListener, OnLongClickListener {
     private static final String TAG = ScheduledSmsList.class.getSimpleName();
+    private static final int DIALOG_INFO_ID = 1;
     private SmsCursorAdapter adapter;
     private Timer timer = null;
     private Button newSmsButton;
@@ -36,6 +42,9 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener {
         adapter = new SmsCursorAdapter(this, R.layout.list_item, c);
         getListView().setAdapter(adapter);
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+        getListView().setOnItemClickListener(this);
+        getListView().setOnLongClickListener(this);
     }
 
     @Override
@@ -90,9 +99,43 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener {
         case R.id.select_all:
             adapter.selectAllItems();
             return true;
-
+        case R.id.about:
+            showDialog(DIALOG_INFO_ID);
+            return true;
         }
         return super.onMenuItemSelected(featureId, item);
+    }
+
+    private Dialog createInfoDialog() {
+
+        Dialog dialog = new Dialog(ScheduledSmsList.this);
+        dialog.setContentView(R.layout.about_dialog);
+        dialog.setTitle(getResources().getString(R.string.app_name));
+        ImageView image1 = (ImageView) dialog.findViewById(R.id.image1);
+        ImageView image2 = (ImageView) dialog.findViewById(R.id.image2);
+        ImageView image3 = (ImageView) dialog.findViewById(R.id.image3);
+        image1.setImageResource(R.drawable.icon);
+        image2.setImageResource(R.drawable.marek_s);
+        image3.setImageResource(R.drawable.mario);
+        dialog.setOwnerActivity(this);
+
+        return dialog;
+
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        Dialog dialog;
+        Log.d(TAG, "onCreateDialog " + id);
+        switch (id) {
+        case DIALOG_INFO_ID:
+            dialog = createInfoDialog();
+            break;
+        default:
+            dialog = null;
+            break;
+        }
+        return dialog;
     }
 
     @Override
@@ -114,5 +157,16 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener {
             throw new IllegalStateException("Not support. Pressed item is: " + v.getId());
         }
 
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(TAG, "onItemClick " + id + " position " + position);
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        Log.d(TAG, "onItemClick " + v);
+        return true;
     }
 }

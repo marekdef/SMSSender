@@ -19,4 +19,12 @@
     <string name="dialog_empty_message">You tried send empty message or without phone number</string>
     <string name="no_items">Press Menu, New sms to add new task</string>
     <string name="provide_number">Provide sms number</string>
+    <string name="sms_send_status">Sms send OK</string>
+    <string name="sms_error_failure_status">Sms not send: generic error failure</string>
+    <string name="sms_no_service_status">Sms not send: no service</string>
+    <string name="sms_null_pdu_status">Sms not send: null pdu</string>
+    <string name="sms_radio_off_status">Sms not send: radio off</string>
+    <string name="sms_send_unknown_status">Sms Receiver status unknown</string>
+    <string name="about">about</string>
+    
 </resources>
