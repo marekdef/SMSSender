@@ -10,6 +10,7 @@ import net.retsat1.starlab.smssender.dao.SmsMessageDaoImpl;
 import net.retsat1.starlab.smssender.dto.SmsMessage;
 import net.retsat1.starlab.smssender.service.SendingService;
 import net.retsat1.starlab.smssender.utils.DateUtils;
+import net.retsat1.starlab.smssender.utils.MyLog;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -17,7 +18,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.telephony.SmsManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,7 +78,7 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
         View v = li.inflate(R.layout.list_item, parent, false);
         CheckBox cb = (CheckBox) v.findViewById(R.id.checked);
         Integer id = cursor.getInt(cursor.getColumnIndex(SmsMessage.SMS_ID));
-        Log.d(TAG, "newView ID=" + id + " checked= " + cb.isChecked());
+        MyLog.d(TAG, "newView ID=" + id + " checked= " + cb.isChecked());
         cb.setOnCheckedChangeListener(this);
         cb.setTag(id);
         return v;
@@ -86,7 +86,7 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        Log.d(TAG, "bindView view " + view + " context  " + context + " cursor " + cursor);
+        MyLog.d(TAG, "bindView view " + view + " context  " + context + " cursor " + cursor);
         final ViewBinder binder = getViewBinder();
         final int count = uiPosition.length;
         final int[] from = mFrom;
@@ -97,7 +97,7 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
             if (v != null) {
                 boolean bound = false;
                 if (binder != null) {
-                    Log.d(TAG, "from[i]  " + from[i] + " " + valuePosition[i]);
+                    MyLog.d(TAG, "from[i]  " + from[i] + " " + valuePosition[i]);
                     bound = binder.setViewValue(v, cursor, from[i]);
                 }
 
@@ -125,12 +125,12 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.d(TAG, "convertView " + convertView);
+        MyLog.d(TAG, "convertView " + convertView);
         View v = null;
         if (convertView == null) {
             convertView = li.inflate(R.layout.list_item, parent, false);
         }
-        Log.d(TAG, "v = " + " convertView = " + convertView);
+        MyLog.d(TAG, "v = " + " convertView = " + convertView);
         v = super.getView(position, convertView, parent);
         this.c.moveToPosition(position);
 
@@ -139,12 +139,12 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
         TextView statusTextView = (TextView) v.findViewById(R.id.stat);
         TextView countDownTextView = (TextView) v.findViewById(R.id.timeText);
         String status = getStatusText(smsMessage.messageStatus, smsMessage.deliveryStatus);
-        Log.d(TAG, "smsMessage.deliveryDate  " + smsMessage.deliveryDate + " SS= " + System.currentTimeMillis());
+        MyLog.d(TAG, "smsMessage.deliveryDate  " + smsMessage.deliveryDate + " SS= " + System.currentTimeMillis());
         String counting = getCountDownTime(smsMessage);
         countDownTextView.setText(counting);
         statusTextView.setText(status);
         setCheckBoxState(v, id);
-        Log.d(TAG, "position " + position);
+        MyLog.d(TAG, "position " + position);
         return v;
     }
 
@@ -235,7 +235,7 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        Log.d(TAG, "TAG " + buttonView.getTag());
+        MyLog.d(TAG, "TAG " + buttonView.getTag());
         synchronized (checkList) {
             if (isChecked) {
                 checkList.add((Integer) buttonView.getTag());
@@ -247,7 +247,7 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
     }
 
     public void selectAllItems() {
-        Log.d(TAG, "selectAllItems");
+        MyLog.d(TAG, "selectAllItems");
         if (getCount() > 0) {
             c.moveToFirst();
             do {

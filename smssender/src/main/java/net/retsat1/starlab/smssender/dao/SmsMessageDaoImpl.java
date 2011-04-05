@@ -1,11 +1,11 @@
 package net.retsat1.starlab.smssender.dao;
 
 import net.retsat1.starlab.smssender.dto.SmsMessage;
+import net.retsat1.starlab.smssender.utils.MyLog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 
 public class SmsMessageDaoImpl implements SmsMessageDao {
 
@@ -69,7 +69,7 @@ public class SmsMessageDaoImpl implements SmsMessageDao {
         SmsMessage smsMessage = null;
         if (c != null && c.getCount() > 0) {
             c.moveToFirst();
-            Log.d("TAG", "count =" + c.getCount());
+            MyLog.d("TAG", "count =" + c.getCount());
             smsMessage = new SmsMessage();
             smsMessage.id = smsId;
             smsMessage.message = c.getString(c.getColumnIndex(SmsMessage.MESSAGE));

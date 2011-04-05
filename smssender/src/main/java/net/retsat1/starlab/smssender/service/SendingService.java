@@ -6,6 +6,7 @@ import net.retsat1.starlab.smssender.dto.SmsMessage;
 import net.retsat1.starlab.smssender.exception.GUIException;
 import net.retsat1.starlab.smssender.receiver.SmsStatusDeliveredReceiver;
 import net.retsat1.starlab.smssender.receiver.SmsStatusSendReceiver;
+import net.retsat1.starlab.smssender.utils.MyLog;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
@@ -15,7 +16,6 @@ import android.os.IBinder;
 import android.os.Parcel;
 import android.os.RemoteException;
 import android.telephony.SmsManager;
-import android.util.Log;
 
 public class SendingService extends Service {
     private static final String TAG = SendingService.class.getSimpleName();
@@ -26,21 +26,21 @@ public class SendingService extends Service {
         if (intent == null) {
             return;
         }
-        Log.d(TAG, "intent " + intent + " startId  " + startId);
-        Log.d(TAG, "Extras " + intent.getExtras());
+        MyLog.d(TAG, "intent " + intent + " startId  " + startId);
+        MyLog.d(TAG, "Extras " + intent.getExtras());
         int smsId = intent.getExtras().getInt(SmsMessage.SMS_ID);
-        Log.d(TAG, "onStart " + startId + " smsId " + smsId + intent.describeContents());
+        MyLog.d(TAG, "onStart " + startId + " smsId " + smsId + intent.describeContents());
         super.onStart(intent, startId);
         sendSms(smsId);
     }
 
     private void sendSms(int smsId) {
-        Log.d(TAG, "smsId " + smsId);
+        MyLog.d(TAG, "smsId " + smsId);
         SmsMessage smsMessage = smsMessageDao.searchByID(smsId);
         try {
             sendSms(smsMessage);
         } catch (Exception e) {
-            Log.d(TAG, "Message not find in database", e);
+            MyLog.e(TAG, "Message not find in database", e);
             smsMessage.deliveryStatus = -110; // error
             smsMessageDao.update(smsMessage);
         }
@@ -66,11 +66,11 @@ public class SendingService extends Service {
             updateSmsStatusToSending(smsMessage);
             sms.sendTextMessage(smsMessage.number, null, smsMessage.message, sentPI, deliveredPI);
         } catch (IllegalArgumentException e) {
-            Log.d(TAG, "Empty message or number or ... fatal error", e);
+            MyLog.e(TAG, "Empty message or number or ... fatal error", e);
             throw new GUIException(getApplicationContext(), GUIException.ERROR_DELIVERY_EMPTY_MESSAGE);
 
         } catch (Throwable e) {
-            Log.d(TAG, "Problem witch sending sms", e);
+            MyLog.e(TAG, "Problem witch sending sms", e);
             throw new GUIException(getApplicationContext(), GUIException.ERROR_DELIVERY_STATUS_GENERAL);
         }
     }
@@ -89,13 +89,13 @@ public class SendingService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(TAG, "SendingService.onBind()");
+        MyLog.d(TAG, "SendingService.onBind()");
         return mBinder;
     }
 
     @Override
     public void onCreate() {
-        Log.d(TAG, "SendingService.onCreate()");
+        MyLog.d(TAG, "SendingService.onCreate()");
         smsMessageDao = new SmsMessageDaoImpl(this);
         super.onCreate();
     }
@@ -103,13 +103,13 @@ public class SendingService extends Service {
     private final IBinder mBinder = new Binder() {
         @Override
         protected boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-            Log.d(TAG, "SendingService.onTransact()");
+            MyLog.d(TAG, "SendingService.onTransact()");
             return super.onTransact(code, data, reply, flags);
         }
     };
 
     public void onDestroy() {
-        Log.d(TAG, "onDestroy()");
+        MyLog.d(TAG, "onDestroy()");
     };
 
 }

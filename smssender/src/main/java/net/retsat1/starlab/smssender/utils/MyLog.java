@@ -14,13 +14,33 @@ public class MyLog {
 
     public static void v(String TAG, String message) {
         if (logOn) {
-            Log.d(TAG, message);
+            Log.v(TAG, message);
         }
     }
 
     public static void e(String TAG, String message) {
         if (logOn) {
-            Log.d(TAG, message);
+            Log.e(TAG, message);
         }
+    }
+
+    public static void e(String TAG, String message, Throwable e) {
+        if (logOn) {
+            Log.e(TAG, message, e);
+        }
+    }
+
+    public static void i(String TAG, String message) {
+
+        if (logOn) {
+            Log.i(TAG, message);
+        }
+    }
+
+    public static void w(String TAG, String message) {
+        if (logOn) {
+            Log.w(TAG, message);
+        }
+
     }
 }
