@@ -42,7 +42,8 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
         adapter = new SmsCursorAdapter(this, R.layout.list_item, c);
         getListView().setAdapter(adapter);
         getListView().setOnItemClickListener(this);
-        getListView().setOnLongClickListener(this);
+        registerForContextMenu(getListView());
+
     }
 
     @Override
