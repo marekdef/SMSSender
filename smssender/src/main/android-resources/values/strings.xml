@@ -27,5 +27,9 @@
     <string name="sms_send_unknown_status">Sms Receiver status unknown</string>
     <string name="about">about</string>
     <string name="delete_all_old">delete old tasks</string>
-    
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="enebled">Enabled</string>
+    <string name="disabled">Disabled</string>
+    <string name="copy">Copy</string>
 </resources>

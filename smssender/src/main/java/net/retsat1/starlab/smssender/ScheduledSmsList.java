@@ -11,6 +11,7 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,6 +27,7 @@ import android.widget.ListView;
 public class ScheduledSmsList extends ListActivity implements OnClickListener, OnItemClickListener, OnLongClickListener {
     private static final String TAG = ScheduledSmsList.class.getSimpleName();
     private static final int DIALOG_INFO_ID = 1;
+
     private SmsCursorAdapter adapter;
     private Timer timer = null;
     private Button newSmsButton;
@@ -42,7 +44,59 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
         adapter = new SmsCursorAdapter(this, R.layout.list_item, c);
         getListView().setAdapter(adapter);
         getListView().setOnItemClickListener(this);
-        getListView().setOnLongClickListener(this);
+        registerForContextMenu(getListView());
+
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info;
+        try {
+            info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        } catch (ClassCastException e) {
+            return false;
+        }
+        MyLog.d(TAG, "info.position = " + info.position + " getListAdapter() " + adapter);
+        MyLog.d(TAG, "item " + adapter.getItemId(info.position));
+        switch (item.getItemId()) {
+        case R.id.edit_context_menu:
+            runEditSmsModeActivity(info.position);
+            return true;
+        case R.id.delete_context_menu:
+            adapter.delete(info.position);
+            return true;
+        case R.id.copy_context_menu:
+            runCopySmsModeActivity(info.position);
+            return true;
+        }
+        return false;
+    }
+
+    private void runCopySmsModeActivity(int position) {
+        int smsid = adapter.getSmsIDByPosition(position);
+        Intent intent = new Intent(this, ScheduleNewSms.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(ScheduleNewSms.SCREEN_MODE, ScheduleNewSms.SCREEN_MODE_COPY);
+        bundle.putInt(SmsMessage.SMS_ID, smsid);
+        intent.putExtras(bundle);
+        startActivity(intent);
+
+    }
+
+    private void runEditSmsModeActivity(int position) {
+        int smsid = adapter.getSmsIDByPosition(position);
+        Intent intent = new Intent(this, ScheduleNewSms.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(ScheduleNewSms.SCREEN_MODE, ScheduleNewSms.SCREEN_MODE_EDIT);
+        bundle.putInt(SmsMessage.SMS_ID, smsid);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override
@@ -74,7 +128,7 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
                 });
             }
         };
-        timer.schedule(tt, 1000, 1000);
+        timer.schedule(tt, 10000, 10000);
 
     }
 
