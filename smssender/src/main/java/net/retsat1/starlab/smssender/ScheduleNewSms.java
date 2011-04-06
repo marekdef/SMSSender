@@ -2,6 +2,7 @@ package net.retsat1.starlab.smssender;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
@@ -72,9 +73,24 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         smsMessageDao = new SmsMessageDaoImpl(this);
         phoneContactDao = new PhoneContactDaoImpl(this);
         setAdapterForNumberEditor();
+        initEditView();
+    }
+
+    private void initEditView() {
         Bundle bundle = getIntent().getExtras();
+        if (bundle == null) {
+            return; // This is not a edit mode;
+        }
         Integer smsID = bundle.getInt("SMS_ID");
         Log.d(TAG, "smsID " + smsID);
+        SmsMessage smsMessage = smsMessageDao.searchByID(smsID);
+        numberEditText.setText(smsMessage.number);
+        messageEditText.setText(smsMessage.message);
+        Date d = new Date(smsMessage.deliveryDate);
+        datePicker.updateDate(d.getYear() + 1900, d.getMonth(), d.getDate());
+        timePicker.setCurrentHour(d.getHours());
+        timePicker.setCurrentMinute(d.getMinutes());
+        timePicker.setCurrentSecond(d.getSeconds());
     }
 
     @Override
