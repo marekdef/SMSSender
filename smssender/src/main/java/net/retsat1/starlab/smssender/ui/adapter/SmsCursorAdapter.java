@@ -21,7 +21,6 @@ import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
@@ -73,16 +72,15 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
         }
     }
 
-    @Override
-    public synchronized View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View v = li.inflate(R.layout.list_item, parent, false);
-        CheckBox cb = (CheckBox) v.findViewById(R.id.checked);
-        Integer id = cursor.getInt(cursor.getColumnIndex(SmsMessage.SMS_ID));
-        MyLog.d(TAG, "newView ID=" + id + " checked= " + cb.isChecked());
-        cb.setOnCheckedChangeListener(this);
-        cb.setTag(id);
-        return v;
-    }
+    // @Override
+    // public synchronized View newView(Context context, Cursor cursor,
+    // ViewGroup parent) {
+    // View v = li.inflate(R.layout.list_item, parent, false);
+    // Integer id = cursor.getInt(cursor.getColumnIndex(SmsMessage.SMS_ID));
+    // MyLog.d(TAG, "newView ID=" + id + " checked= " + cb.isChecked());
+    //
+    // return v;
+    // }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
@@ -143,7 +141,6 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
         String counting = getCountDownTime(smsMessage);
         countDownTextView.setText(counting);
         statusTextView.setText(status);
-        setCheckBoxState(v, id);
         MyLog.d(TAG, "position " + position);
         return v;
     }
@@ -155,17 +152,6 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
             countDown = DateUtils.changeSecToNiceDate(time);
         }
         return countDown;
-    }
-
-    private void setCheckBoxState(View v, int id) {
-        CheckBox cBox = (CheckBox) v.findViewById(R.id.checked);
-        cBox.setTag(id);
-        cBox.setOnCheckedChangeListener(this);
-        synchronized (checkList) {
-            boolean b = checkList.contains(id);
-            cBox.setChecked(b);
-        }
-
     }
 
     private String getStatusText(Integer messageStatus, Integer deliveryStatus) {

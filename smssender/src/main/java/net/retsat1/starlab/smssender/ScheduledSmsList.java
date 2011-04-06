@@ -41,8 +41,6 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
         Cursor c = managedQuery(SmsMessage.CONTENT_URI, null, null, null, null);
         adapter = new SmsCursorAdapter(this, R.layout.list_item, c);
         getListView().setAdapter(adapter);
-        getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-
         getListView().setOnItemClickListener(this);
         getListView().setOnLongClickListener(this);
     }
@@ -93,11 +91,8 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
         case R.id.new_sms:
             startActivity(new Intent(this, ScheduleNewSms.class));
             return true;
-        case R.id.delete_checked:
+        case R.id.delete_all_old:
             adapter.deleteAllCheckedItems();
-            return true;
-        case R.id.select_all:
-            adapter.selectAllItems();
             return true;
         case R.id.about:
             showDialog(DIALOG_INFO_ID);

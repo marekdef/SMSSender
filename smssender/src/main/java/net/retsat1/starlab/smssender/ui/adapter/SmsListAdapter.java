@@ -43,10 +43,6 @@ public class SmsListAdapter extends ArrayAdapter<SmsMessage> {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             rowView = inflater.inflate(R.layout.list_item, null, true);
             holder = new ViewHolder();
-            holder.checked = (CheckBox) rowView.findViewById(R.id.checked);
-
-            // holder.timeToGo = (Chronometer)
-            // rowView.findViewById(R.id.how_long_chronometer);
             holder.number = (TextView) rowView.findViewById(R.id.numberText);
             holder.message = (TextView) rowView.findViewById(R.id.messageText);
             rowView.setTag(holder);
