@@ -6,8 +6,36 @@
 	<packaging>apk</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>smssender</name>
-
+	<!-- 
+	<profiles>
+	  <profile>
+	      <id>sonar</id>
+	      <activation>
+	        <activeByDefault>false</activeByDefault>
+	      </activation>     
+	      <properties>
+	      
+	        <sonar.jdbc.url>jdbc:postgresql://localhost/sonar</sonar.jdbc.url>
+	        <sonar.jdbc.username>mario</sonar.jdbc.username>
+	        <sonar.jdbc.password>qwerty</sonar.jdbc.password>
+	        <sonar.jdbc.driver>org.postgresql.Driver</sonar.jdbc.driver>
+	         SERVER ON A REMOTE HOST 
+			<sonar.host.url>http://localhost:9000</sonar.host.url>
+	      </properties>
+	      
+	    </profile>
+	</profiles>
+ -->
+	
 	<dependencies>
+		<!-- 
+		<dependency>
+    		<groupId>org.codehaus.sonar</groupId>
+    		<artifactId>sonar-maven-plugin</artifactId>
+    		<version>2.6</version>
+		</dependency>
+		 -->
+		<!-- http://repo1.maven.org/maven2/org/codehaus/sonar/ -->
 		<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>android</artifactId>
@@ -25,7 +53,23 @@
 	</dependencies>
 
 	<build>
+		<!-- To define the plugin version in your parent POM -->
+	    <pluginManagement>
+	      <plugins>
+	        <plugin>
+	          <groupId>org.codehaus.mojo</groupId>
+	          <artifactId>sonar-maven-plugin</artifactId>
+	          <version>2.0-beta-2</version>
+	        </plugin>
+	      </plugins>
+	    </pluginManagement>
 		<plugins>
+		
+	        <plugin>
+		        <groupId>org.codehaus.sonar</groupId>
+		        <artifactId>sonar-maven-plugin</artifactId>
+		        <version>2.6</version>
+		      </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -43,7 +87,7 @@
 						<platform>8</platform>
 					</sdk>
 					<emulator>
-						<avd>2.2-HVGA</avd>
+						<avd>a2_22</avd>
 					</emulator>
 					<deleteConflictingFiles>true</deleteConflictingFiles>
 					<assetsDirectory>src/main/android-assets</assetsDirectory>

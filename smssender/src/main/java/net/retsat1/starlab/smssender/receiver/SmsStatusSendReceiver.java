@@ -3,6 +3,7 @@ package net.retsat1.starlab.smssender.receiver;
 import net.retsat1.starlab.smssender.dao.SmsMessageDaoImpl;
 import net.retsat1.starlab.smssender.dto.SmsMessage;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ public class SmsStatusSendReceiver extends BroadcastReceiver {
 
     private static final String TAG = "SmsStatusSendReceiver";
     private SmsMessageDaoImpl smsMessageDao;
+    private NotificationManager notificationManager;
 
     public SmsStatusSendReceiver() {
 
@@ -23,29 +25,42 @@ public class SmsStatusSendReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent i) {
         int resultCode = getResultCode();
         Log.d(TAG, "getResultCode() " + resultCode);
-        Log.d(TAG, "intent  " + i + " d=" + i.describeContents());
         int smsId = i.getExtras().getInt(SmsMessage.SMS_ID);
         Log.d(TAG, "smsId() " + smsId);
         updateSmsStatus(context, smsId, resultCode);
+        CharSequence contentText = null;
         switch (resultCode) {
 
         case Activity.RESULT_OK:
-            Toast.makeText(context, "SMS sent", Toast.LENGTH_SHORT).show();
+            contentText = context.getResources().getString(net.retsat1.starlab.smssender.R.string.sms_send_status);
+            sendNotification(context, contentText, smsId);
             break;
         case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-            Toast.makeText(context, "Generic failure", Toast.LENGTH_SHORT).show();
+            contentText = context.getResources().getString(net.retsat1.starlab.smssender.R.string.sms_error_failure_status);
+            sendNotification(context, contentText, smsId);
             break;
         case SmsManager.RESULT_ERROR_NO_SERVICE:
-            Toast.makeText(context, "No service", Toast.LENGTH_SHORT).show();
+            contentText = context.getResources().getString(net.retsat1.starlab.smssender.R.string.sms_no_service_status);
+            sendNotification(context, contentText, smsId);
             break;
         case SmsManager.RESULT_ERROR_NULL_PDU:
-            Toast.makeText(context, "Null PDU", Toast.LENGTH_SHORT).show();
+            contentText = context.getResources().getString(net.retsat1.starlab.smssender.R.string.sms_null_pdu_status);
+            sendNotification(context, contentText, smsId);
             break;
         case SmsManager.RESULT_ERROR_RADIO_OFF:
-            Toast.makeText(context, "Radio off", Toast.LENGTH_SHORT).show();
+            contentText = context.getResources().getString(net.retsat1.starlab.smssender.R.string.sms_radio_off_status);
+            sendNotification(context, contentText, smsId);
+            break;
+        default:
+            contentText = context.getResources().getString(net.retsat1.starlab.smssender.R.string.sms_send_unknown_status);
+            sendNotification(context, contentText, smsId);
             break;
         }
 
+    }
+
+    private void sendNotification(Context context, CharSequence contentText, int smsId) {
+        Toast.makeText(context, contentText, Toast.LENGTH_SHORT).show();
     }
 
     private void updateSmsStatus(Context context, int smsId, int resultCode) {
@@ -53,7 +68,6 @@ public class SmsStatusSendReceiver extends BroadcastReceiver {
         SmsMessage smsMessage = smsMessageDao.searchByID(smsId);
         smsMessage.messageStatus = resultCode;
         smsMessageDao.update(smsMessage);
-
     }
 
 }

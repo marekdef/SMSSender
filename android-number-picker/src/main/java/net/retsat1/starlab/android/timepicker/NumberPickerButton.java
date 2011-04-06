@@ -16,8 +16,6 @@
 
 package net.retsat1.starlab.android.timepicker;
 
-import net.retsat1.starlab.android.timepicker.R;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;

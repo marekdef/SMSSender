@@ -9,4 +9,22 @@
     <string name="delete_all_checked">Delete all checked</string>
     <string name="select_all">select all</string>
     <string name="this_sms_is_paid">This SMS is paid. Bay paid version of application to send paid sms</string>
+    <string name="sms_delivered">Sms delivered</string>
+    <string name="sms_not_delivered">SMS not delivered</string>
+    <string name="sms_delivered_unknown">SMS delivered status unknown</string>
+    <string name="name">Name</string>
+    <string name="phone">Phone</string>
+    <string name="dialog_alert_title">SmsSender</string>
+    <string name="help_descriptor">Press Menu, New Sms to add task</string>
+    <string name="dialog_empty_message">You tried send empty message or without phone number</string>
+    <string name="no_items">Press Menu, New sms to add new task</string>
+    <string name="provide_number">Provide sms number</string>
+    <string name="sms_send_status">Sms send OK</string>
+    <string name="sms_error_failure_status">Sms not send: generic error failure</string>
+    <string name="sms_no_service_status">Sms not send: no service</string>
+    <string name="sms_null_pdu_status">Sms not send: null pdu</string>
+    <string name="sms_radio_off_status">Sms not send: radio off</string>
+    <string name="sms_send_unknown_status">Sms Receiver status unknown</string>
+    <string name="about">about</string>
+    
 </resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="welcome">Welcome to <b>SmsSender</b>!</string>
+    <string name="about_text"><b>Sms Sender</b>\nApplication to send sms bla bla bla bla bla bla bla bla bla blabla bla bla bla blabla bla bla bla blabla bla bla bla bla</string>
+    <string name="about_marek"><b>Marek Defeciński</b>\nZnany w środowisku przestępczym\njako marekdef. Ostatnio zdradza \nJave z pythonem :) \nmarekdef@gmail.com</string>
+    <string name="about_mario"><b>Mariusz Saramak</b>\nMówią do niego -Zdrowaś- \nale zdrowy nie jest ;P\nmariusz@saramak.eu</string>
+</resources>

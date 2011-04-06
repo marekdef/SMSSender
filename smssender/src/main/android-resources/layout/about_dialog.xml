@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView android:id="@+id/ScrollView01"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content" android:layout_height="wrap_content">
+	<TableLayout android:layout_width="300px"
+		 android:layout_height="wrap_content"
+		android:stretchColumns="1" android:padding="10px">
+		<TableRow>
+			<ImageView android:id="@+id/image1" android:layout_column="1"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:paddingTop="5px" />
+			<TextView android:id="@+id/about_program" android:text="@string/about_text"
+				android:textColor="#FFF" android:paddingLeft="10px" android:paddingRight="10px"/>
+		</TableRow>
+		<TableRow>
+			<ImageView android:id="@+id/image2" android:layout_column="1"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:paddingTop="5px" />
+			<TextView android:id="@+id/about_marek" android:text="@string/about_marek"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:paddingLeft="10px" android:paddingRight="10px"
+				android:textColor="#FFF" />
+		</TableRow>
+		<TableRow>
+			<ImageView android:id="@+id/image3" android:layout_column="1"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:paddingTop="5px" />
+			<TextView android:id="@+id/about_mariusz" android:text="@string/about_mario"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:textColor="#FFF" android:gravity="left" android:paddingLeft="10px" android:paddingRight="10px"/>
+		</TableRow>
+
+	</TableLayout>
+</ScrollView>

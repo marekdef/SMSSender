@@ -22,7 +22,7 @@ public class SheduleSmsContentProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "smsshedule.db";
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     public static final String PROVIDER_NAME = "net.retsat1.starlab.smssender.providers.SheduleSmsContentProvider";
     public static final Uri CONTENT_URI = Uri.parse("content://" + PROVIDER_NAME + "/sms");
@@ -46,7 +46,7 @@ public class SheduleSmsContentProvider extends ContentProvider {
         notesProjectionMap.put(SmsMessage.DELIVERY_STATUS, SmsMessage.DELIVERY_STATUS);
         notesProjectionMap.put(SmsMessage.STATUS_DATE, SmsMessage.STATUS_DATE);
         notesProjectionMap.put(SmsMessage.SETUP_DATE, SmsMessage.SETUP_DATE);
-        notesProjectionMap.put(SmsMessage.DELIVERY_DATE, SmsMessage.SETUP_DATE);
+        notesProjectionMap.put(SmsMessage.DELIVERY_DATE, SmsMessage.DELIVERY_DATE);
 
     }
 
