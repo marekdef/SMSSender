@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import net.retsat1.starlab.android.timepicker.DetailedTimePicker;
@@ -37,6 +38,12 @@ import android.widget.Toast;
 
 public class ScheduleNewSms extends Activity implements OnClickListener {
     private static final String TAG = ScheduleNewSms.class.getSimpleName();
+
+    private static final int CONTACTS_UPDATE_NEEDED = 0;
+
+    private static final int CONTACTS_UPDATING = 1;
+
+    private static final int CONTACTS_UPDATED = 2;
 
     private Button sendButton;
 
@@ -75,13 +82,10 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
 
     }
 
-    protected static int contactUpdateStatus = 0;
+    protected static int contactUpdateStatus = CONTACTS_UPDATE_NEEDED;
 
-    public boolean isContactUpdateIsNeed() {
-        if (contactUpdateStatus == 0) {
-            return true;
-        }
-        return false;
+    public boolean isContactUpdateNeeded() {
+        return (contactUpdateStatus == CONTACTS_UPDATE_NEEDED);
     }
 
     @Override
@@ -114,20 +118,20 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
     private static SimpleAdapter phoneAdapter;
 
     private void setAdapterForNumberEditor() {
-        if (isContactUpdateIsNeed()) {
+        if (isContactUpdateNeeded()) {
             progressDialog = ProgressDialog.show(this, "Working..", "Update contacts", true, false);
         }
 
         Thread t = new Thread() {
             public void run() {
-                contactUpdateStatus = 1;
+                contactUpdateStatus = CONTACTS_UPDATING;
                 Cursor cursor = getAllContactWithNumbers();
 
                 if (cursor == null) {
                     MyLog.d(TAG, "No contacts to display");
                 } else {
 
-                    ArrayList<ContactContainer> phones = new ArrayList<ContactContainer>();
+                    List<ContactContainer> phones = new ArrayList<ContactContainer>();
                     phoneAdapter = new SimpleAdapter(ScheduleNewSms.this, phones, R.layout.phone_row_entry, new String[] { CONTACT_NAME, CONTACT_PHONE },
                             new int[] { R.id.row_display_name, R.id.row_phone_number });
 
@@ -135,7 +139,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
                         String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                         String displayName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                         Cursor pCur = getAllPhoneByContactId(id);
-                        MyLog.d(TAG, "Contact " + id + " how many phone numbers " + pCur.getCount());
+                        MyLog.d(TAG, "Contact %s has %d phone numbers", id, pCur.getCount());
                         while (pCur.moveToNext()) {
                             String phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA));
                             addPhoneToList(phone, displayName, phones);
@@ -146,10 +150,10 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
                     ScheduleNewSms.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            MyLog.d(TAG, "numberEditText setAdapter ");
+                            MyLog.d(TAG, "ScheduleNewSms.setAdapterForNumberEditor()");
                             numberEditText.setAdapter(phoneAdapter);
                             progressDialog.dismiss();
-                            contactUpdateStatus = 2;
+                            contactUpdateStatus = CONTACTS_UPDATED;
                         }
                     });
                 }
@@ -165,12 +169,12 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
              * @param phones
              *            place where we aggregate phone numbers
              */
-            private void addPhoneToList(String phone, String displayName, ArrayList<ContactContainer> phones) {
+            private void addPhoneToList(String phone, String displayName, List<ContactContainer> phones) {
                 ContactContainer phoneRow = new ContactContainer();
                 phoneRow.put("name", displayName);
                 phoneRow.put("phone", phone);
                 phones.add(phoneRow);
-                MyLog.i("Pratik", "PHONE: " + displayName + " <" + phone + "> ");
+                MyLog.i(TAG, "PHONE: %s<%s>", displayName, phone);
             }
 
             private Cursor getAllPhoneByContactId(String id) {
@@ -185,7 +189,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
                         null);
             }
         };
-        if (isContactUpdateIsNeed()) {
+        if (isContactUpdateNeeded()) {
             t.start();
         } else {
             assert (phoneAdapter == null);
@@ -233,8 +237,8 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
     }
 
     private void alarmSetup(SmsMessage smsMessage) {
-
-        MyLog.d(TAG, "Data when" + smsMessage.deliveryDate);
+        System.out.println("");
+        MyLog.d(TAG, "ScheduleNewSms.alarmSetup() Delivery date %d", smsMessage.deliveryDate);
         Intent intent = new Intent(this, SendingService.class);
         intent.putExtra(SmsMessage.SMS_ID, smsMessage.id);
         PendingIntent pendingIntent = PendingIntent.getService(this, smsMessage.id, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -251,12 +255,8 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
     }
 
     private void logTime() {
-        MyLog.d(TAG, "year: " + datePicker.getYear());
-        MyLog.d(TAG, "month: " + datePicker.getMonth());
-        MyLog.d(TAG, "day: " + datePicker.getDayOfMonth());
-        MyLog.d(TAG, "hh: " + timePicker.getCurrentHour());
-        MyLog.d(TAG, "mm: " + timePicker.getCurrentMinute());
-        MyLog.d(TAG, "ss: " + timePicker.getCurrentSecond());
+        MyLog.d(TAG, "%d-%d-%dT%d:%d:%d", datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePicker.getCurrentHour(),
+                timePicker.getCurrentMinute(), timePicker.getCurrentSecond());
     }
 
     @Override

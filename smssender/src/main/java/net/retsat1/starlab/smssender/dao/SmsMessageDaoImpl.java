@@ -70,7 +70,7 @@ public class SmsMessageDaoImpl implements SmsMessageDao {
         SmsMessage smsMessage = null;
         if (c != null && c.getCount() > 0) {
             c.moveToFirst();
-            MyLog.d("TAG", "count =" + c.getCount());
+            MyLog.d(TAG, "count =" + c.getCount());
             smsMessage = new SmsMessage();
             smsMessage.id = smsId;
             smsMessage.message = c.getString(c.getColumnIndex(SmsMessage.MESSAGE));
@@ -87,7 +87,7 @@ public class SmsMessageDaoImpl implements SmsMessageDao {
 
     @Override
     public void delete(int id) {
-        String[] args = new String[] { "" + id };
+        String[] args = new String[] { String.valueOf(id) };
         String where = SmsMessage.SMS_ID + " =?";
         mContext.getContentResolver().delete(SmsMessage.CONTENT_URI, where, args);
     }
