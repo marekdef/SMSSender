@@ -11,6 +11,7 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -44,6 +45,38 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
         getListView().setOnItemClickListener(this);
         registerForContextMenu(getListView());
 
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info;
+        try {
+            info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        } catch (ClassCastException e) {
+            return false;
+        }
+        MyLog.d(TAG, "info.position = " + info.position + " getListAdapter() " + adapter);
+        MyLog.d(TAG, "aaa " + adapter.getItemId(info.position));
+        switch (item.getItemId()) {
+        case R.id.edit_context_menu:
+            return true;
+        case R.id.delete_context_menu:
+            adapter.delete(info.position);
+            return true;
+        case R.id.enabled_context_menu:
+            return true;
+        case R.id.disabled_context_menu:
+            return true;
+        }
+        // long id = getListAdapter().getItemId(info.position);
+        // MyLog.d(TAG, "id = " + id);
+        return false;
     }
 
     @Override
