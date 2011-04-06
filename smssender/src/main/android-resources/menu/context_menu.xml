@@ -2,6 +2,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/edit_context_menu" android:title="@string/edit"/>
     <item android:id="@+id/delete_context_menu" android:title="@string/delete"/>
-    <item android:id="@+id/disabled_context_menu" android:title="@string/disabled"/>
-    <item android:id="@+id/enabled_context_menu" android:title="@string/enebled"/>
+    <item android:id="@+id/copy_context_menu" android:title="@string/copy"/>
 </menu>

@@ -61,16 +61,18 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
      */
     private SmsMessage smsMessage;
 
-    private int screenMode = 0;
-    private static final int SCREEN_MODE_NEW = 0;
-    private static final int SCREEN_MODE_EDIT = 1;
-    private static final int SCREEN_MODE_COPY = 2;
+    private static int screenMode;
+    public static final int SCREEN_MODE_NEW = 3;
+    public static final int SCREEN_MODE_EDIT = 1;
+    public static final int SCREEN_MODE_COPY = 2;
+    public static final String SCREEN_MODE = "SCREEN_MODE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MyLog.v(TAG, "onCreate");
         setContentView(R.layout.schedule);
+        screenMode = SCREEN_MODE_NEW;
         numberValidator = new NumberHighPaidValidator();
         lenghtNumberValidator = new LenghtNumberValidator();
         datePicker = (DatePicker) findViewById(R.id.dataPicker);
@@ -82,17 +84,43 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         smsMessageDao = new SmsMessageDaoImpl(this);
         phoneContactDao = new PhoneContactDaoImpl(this);
         setAdapterForNumberEditor();
-        initEditView();
+        initEditMode();
+        initCopyMode();
     }
 
-    private void initEditView() {
+    private void initCopyMode() {
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
             return; // This is not a edit mode;
         }
-        Integer smsID = bundle.getInt("SMS_ID");
+        int screenMode = bundle.getInt(SCREEN_MODE);
+        if (screenMode != SCREEN_MODE_COPY) {
+            return; // This is not a copy mode;
+        }
+        Integer smsID = bundle.getInt(SmsMessage.SMS_ID);
         Log.d(TAG, "smsID " + smsID);
         smsMessage = smsMessageDao.searchByID(smsID);
+        inflateSmsMessage();
+        screenMode = SCREEN_MODE_COPY;
+    }
+
+    private void initEditMode() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle == null) {
+            return; // This is not a edit mode;
+        }
+        int screenMode = bundle.getInt(SCREEN_MODE);
+        if (screenMode != SCREEN_MODE_EDIT) {
+            return; // This is not a edit mode;
+        }
+        Integer smsID = bundle.getInt(SmsMessage.SMS_ID);
+        Log.d(TAG, "smsID " + smsID);
+        smsMessage = smsMessageDao.searchByID(smsID);
+        inflateSmsMessage();
+        screenMode = SCREEN_MODE_EDIT;
+    }
+
+    private void inflateSmsMessage() {
         numberEditText.setText(smsMessage.number);
         messageEditText.setText(smsMessage.message);
         Date d = new Date(smsMessage.deliveryDate);
@@ -100,7 +128,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         timePicker.setCurrentHour(d.getHours());
         timePicker.setCurrentMinute(d.getMinutes());
         timePicker.setCurrentSecond(d.getSeconds());
-        screenMode = SCREEN_MODE_EDIT;
+
     }
 
     protected static int contactUpdateStatus = 0;
@@ -244,7 +272,6 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         SmsMessage smsMessage = createNewMessage(reqCode, number, message, scheduledTimeMillis);
         smsMessageDao.insert(smsMessage);
         alarmSetup(smsMessage);
-        finish();
     }
 
     private SmsMessage createNewMessage(int reqCode, String number, String message, long scheduledTimeMillis) {
@@ -299,7 +326,14 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
                 smsMessage.number = numberEditText.getText().toString();
                 smsMessage.message = messageEditText.getText().toString();
                 updateMessage();
+                smsMessageDao.update(smsMessage);
+            } else if (screenMode == SCREEN_MODE_COPY) {
+                smsMessage.number = numberEditText.getText().toString();
+                smsMessage.message = messageEditText.getText().toString();
+                updateMessage();
+                smsMessageDao.insert(smsMessage);
             }
+            finish();
             break;
         default:
             throw new NoSuchElementException("This exception should never be call, please define all menu button");
@@ -322,7 +356,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         smsMessage.messageStatus = SmsMessage.STATUS_UNSENT;
         smsMessage.deliveryStatus = SmsMessage.STATUS_UNSENT;
         alarmSetup(smsMessage);
-        smsMessageDao.update(smsMessage);
+
     }
 
 }

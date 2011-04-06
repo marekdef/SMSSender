@@ -54,8 +54,6 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
         inflater.inflate(R.menu.context_menu, menu);
     }
 
-    private static final String SMS_ID = "SMS_ID";
-
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info;
@@ -65,25 +63,40 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
             return false;
         }
         MyLog.d(TAG, "info.position = " + info.position + " getListAdapter() " + adapter);
-        MyLog.d(TAG, "aaa " + adapter.getItemId(info.position));
+        MyLog.d(TAG, "item " + adapter.getItemId(info.position));
         switch (item.getItemId()) {
         case R.id.edit_context_menu:
-            int smsid = adapter.getSmsIDByPosition(info.position);
-            Intent intent = new Intent(this, ScheduleNewSms.class);
-            Bundle bundle = new Bundle();
-            bundle.putInt("SMS_ID", smsid);
-            intent.putExtras(bundle);
-            startActivity(intent);
+            runEditSmsModeActivity(info.position);
             return true;
         case R.id.delete_context_menu:
             adapter.delete(info.position);
             return true;
-        case R.id.enabled_context_menu:
-            return true;
-        case R.id.disabled_context_menu:
+        case R.id.copy_context_menu:
+            runCopySmsModeActivity(info.position);
             return true;
         }
         return false;
+    }
+
+    private void runCopySmsModeActivity(int position) {
+        int smsid = adapter.getSmsIDByPosition(position);
+        Intent intent = new Intent(this, ScheduleNewSms.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(ScheduleNewSms.SCREEN_MODE, ScheduleNewSms.SCREEN_MODE_COPY);
+        bundle.putInt(SmsMessage.SMS_ID, smsid);
+        intent.putExtras(bundle);
+        startActivity(intent);
+
+    }
+
+    private void runEditSmsModeActivity(int position) {
+        int smsid = adapter.getSmsIDByPosition(position);
+        Intent intent = new Intent(this, ScheduleNewSms.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(ScheduleNewSms.SCREEN_MODE, ScheduleNewSms.SCREEN_MODE_EDIT);
+        bundle.putInt(SmsMessage.SMS_ID, smsid);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override
@@ -115,7 +128,7 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
                 });
             }
         };
-        timer.schedule(tt, 1000, 1000);
+        timer.schedule(tt, 10000, 10000);
 
     }
 

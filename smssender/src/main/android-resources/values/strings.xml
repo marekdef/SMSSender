@@ -31,4 +31,5 @@
     <string name="delete">Delete</string>
     <string name="enebled">Enabled</string>
     <string name="disabled">Disabled</string>
+    <string name="copy">Copy</string>
 </resources>
