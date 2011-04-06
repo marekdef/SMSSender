@@ -20,14 +20,10 @@ public class SmsMessageDaoImpl implements SmsMessageDao {
 
     @Override
     public boolean delete(SmsMessage smsMessage) {
-<<<<<<< HEAD
-        return false;
-=======
         String[] args = new String[] { "" + smsMessage.id };
         String where = SmsMessage.SMS_ID + " =?";
         mContext.getContentResolver().delete(SmsMessage.CONTENT_URI, where, args);
         return true;
->>>>>>> 6899f0ed88b8d37d18c5ba21dd5786da3d0834e3
     }
 
     @Override
@@ -43,14 +39,9 @@ public class SmsMessageDaoImpl implements SmsMessageDao {
         values.put(SmsMessage.STATUS_DATE, smsMessage.dateOfStatus);
         values.put(SmsMessage.DELIVERY_DATE, smsMessage.deliveryDate);
         String where = SmsMessage.SMS_ID + " =?";
-<<<<<<< HEAD
         String[] selectionArgs = new String[] { String.valueOf(smsMessage.id) };
-        mContext.getContentResolver().update(SmsMessage.CONTENT_URI, values, where, selectionArgs);
-=======
-        String[] selectionArgs = new String[] { "" + smsMessage.id };
         contentResolver.update(SmsMessage.CONTENT_URI, values, where, selectionArgs);
         contentResolver.notifyChange(SmsMessage.CONTENT_URI, null);
->>>>>>> 6899f0ed88b8d37d18c5ba21dd5786da3d0834e3
         return true;
     }
 
@@ -79,11 +70,7 @@ public class SmsMessageDaoImpl implements SmsMessageDao {
         SmsMessage smsMessage = null;
         if (c != null && c.getCount() > 0) {
             c.moveToFirst();
-<<<<<<< HEAD
-            Log.d(TAG, "count =" + c.getCount());
-=======
             MyLog.d("TAG", "count =" + c.getCount());
->>>>>>> d07e992fdd6824cf846199e0817c7cf82ab0c999
             smsMessage = new SmsMessage();
             smsMessage.id = smsId;
             smsMessage.message = c.getString(c.getColumnIndex(SmsMessage.MESSAGE));
