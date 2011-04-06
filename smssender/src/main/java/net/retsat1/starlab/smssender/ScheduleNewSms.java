@@ -13,6 +13,7 @@ import net.retsat1.starlab.smssender.dao.SmsMessageDao;
 import net.retsat1.starlab.smssender.dao.SmsMessageDaoImpl;
 import net.retsat1.starlab.smssender.dto.SmsMessage;
 import net.retsat1.starlab.smssender.service.SendingService;
+import net.retsat1.starlab.smssender.utils.MyLog;
 import net.retsat1.starlab.smssender.validators.LenghtNumberValidator;
 import net.retsat1.starlab.smssender.validators.NumberHighPaidValidator;
 import net.retsat1.starlab.smssender.validators.NumberValidator;
@@ -25,7 +26,6 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
@@ -86,7 +86,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        Log.d(TAG, "onConfigurationChanged");
+        MyLog.d(TAG, "onConfigurationChanged");
         super.onConfigurationChanged(newConfig);
     }
 
@@ -124,7 +124,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
                 Cursor cursor = getAllContactWithNumbers();
 
                 if (cursor == null) {
-                    Log.w(TAG, "No contacts to display");
+                    MyLog.d(TAG, "No contacts to display");
                 } else {
 
                     ArrayList<ContactContainer> phones = new ArrayList<ContactContainer>();
@@ -135,7 +135,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
                         String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                         String displayName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                         Cursor pCur = getAllPhoneByContactId(id);
-                        Log.d(TAG, "Contact " + id + " how many phone numbers " + pCur.getCount());
+                        MyLog.d(TAG, "Contact " + id + " how many phone numbers " + pCur.getCount());
                         while (pCur.moveToNext()) {
                             String phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA));
                             addPhoneToList(phone, displayName, phones);
@@ -146,7 +146,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
                     ScheduleNewSms.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d(TAG, "numberEditText setAdapter ");
+                            MyLog.d(TAG, "numberEditText setAdapter ");
                             numberEditText.setAdapter(phoneAdapter);
                             progressDialog.dismiss();
                             contactUpdateStatus = 2;
@@ -170,7 +170,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
                 phoneRow.put("name", displayName);
                 phoneRow.put("phone", phone);
                 phones.add(phoneRow);
-                Log.i("Pratik", "PHONE: " + displayName + " <" + phone + "> ");
+                MyLog.i("Pratik", "PHONE: " + displayName + " <" + phone + "> ");
             }
 
             private Cursor getAllPhoneByContactId(String id) {
@@ -189,7 +189,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
             t.start();
         } else {
             assert (phoneAdapter == null);
-            Log.d(TAG, "phone adapter " + phoneAdapter);
+            MyLog.d(TAG, "phone adapter " + phoneAdapter);
             numberEditText.setAdapter(phoneAdapter);
         }
     }
@@ -200,7 +200,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
 
     private void addMessageToSend(String number, String message) {
         logTime();
-        Log.d(TAG, "sendMessage number " + number + " message " + message);
+        MyLog.d(TAG, "sendMessage number " + number + " message " + message);
         if (numberValidator.isValid(number)) {
             Toast.makeText(this, getResources().getString(R.string.this_sms_is_paid), 2000).show();
             return;
@@ -234,7 +234,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
 
     private void alarmSetup(SmsMessage smsMessage) {
 
-        Log.d(TAG, "Data when" + smsMessage.deliveryDate);
+        MyLog.d(TAG, "Data when" + smsMessage.deliveryDate);
         Intent intent = new Intent(this, SendingService.class);
         intent.putExtra(SmsMessage.SMS_ID, smsMessage.id);
         PendingIntent pendingIntent = PendingIntent.getService(this, smsMessage.id, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -251,12 +251,12 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
     }
 
     private void logTime() {
-        Log.d(TAG, "year: " + datePicker.getYear());
-        Log.d(TAG, "month: " + datePicker.getMonth());
-        Log.d(TAG, "day: " + datePicker.getDayOfMonth());
-        Log.d(TAG, "hh: " + timePicker.getCurrentHour());
-        Log.d(TAG, "mm: " + timePicker.getCurrentMinute());
-        Log.d(TAG, "ss: " + timePicker.getCurrentSecond());
+        MyLog.d(TAG, "year: " + datePicker.getYear());
+        MyLog.d(TAG, "month: " + datePicker.getMonth());
+        MyLog.d(TAG, "day: " + datePicker.getDayOfMonth());
+        MyLog.d(TAG, "hh: " + timePicker.getCurrentHour());
+        MyLog.d(TAG, "mm: " + timePicker.getCurrentMinute());
+        MyLog.d(TAG, "ss: " + timePicker.getCurrentSecond());
     }
 
     @Override

@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.retsat1.starlab.smssender.R;
+import net.retsat1.starlab.smssender.utils.MyLog;
 import android.content.Context;
-import android.util.Log;
 
 /**
  * This is exception which can't be resolved, We can only notifi user that this
@@ -38,7 +38,7 @@ public class GUIException extends Exception {
     @Override
     public String getMessage() {
         String message = context.getApplicationContext().getString(i18nErrorMapping.get(bugID));
-        Log.e(TAG, message);
+        MyLog.e(TAG, message);
         return message;
     }
 }

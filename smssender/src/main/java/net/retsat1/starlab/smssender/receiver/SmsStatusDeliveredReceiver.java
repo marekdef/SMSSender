@@ -4,12 +4,12 @@ import net.retsat1.starlab.smssender.R;
 import net.retsat1.starlab.smssender.dao.SmsMessageDao;
 import net.retsat1.starlab.smssender.dao.SmsMessageDaoImpl;
 import net.retsat1.starlab.smssender.dto.SmsMessage;
+import net.retsat1.starlab.smssender.utils.MyLog;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.util.Log;
 import android.widget.Toast;
 
 public class SmsStatusDeliveredReceiver extends BroadcastReceiver {
@@ -25,10 +25,10 @@ public class SmsStatusDeliveredReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent i) {
 
         int resultCode = getResultCode();
-        Log.d(TAG, "getResultCode() " + resultCode);
-        Log.d(TAG, "intent  " + i + " d=" + i.describeContents());
+        MyLog.d(TAG, "getResultCode() " + resultCode);
+        MyLog.d(TAG, "intent  " + i + " d=" + i.describeContents());
         int smsId = i.getExtras().getInt(SmsMessage.SMS_ID);
-        Log.d(TAG, "smsId() " + smsId);
+        MyLog.d(TAG, "smsId() " + smsId);
         updateSmsStatus(context, smsId, resultCode);
         Resources res = context.getResources();
         switch (resultCode) {
@@ -48,7 +48,7 @@ public class SmsStatusDeliveredReceiver extends BroadcastReceiver {
     private void updateSmsStatus(Context context, int smsId, int resultCode) {
         smsMessageDao = new SmsMessageDaoImpl(context);
         SmsMessage smsMessage = smsMessageDao.searchByID(smsId);
-        Log.d(TAG, "Sms message found " + smsMessage.messageStatus);
+        MyLog.d(TAG, "Sms message found " + smsMessage.messageStatus);
         smsMessage.deliveryStatus = resultCode;
         smsMessageDao.update(smsMessage);
     }

@@ -2,13 +2,13 @@ package net.retsat1.starlab.smssender.receiver;
 
 import net.retsat1.starlab.smssender.dao.SmsMessageDaoImpl;
 import net.retsat1.starlab.smssender.dto.SmsMessage;
+import net.retsat1.starlab.smssender.utils.MyLog;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.telephony.SmsManager;
-import android.util.Log;
 import android.widget.Toast;
 
 public class SmsStatusSendReceiver extends BroadcastReceiver {
@@ -24,9 +24,9 @@ public class SmsStatusSendReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent i) {
         int resultCode = getResultCode();
-        Log.d(TAG, "getResultCode() " + resultCode);
+        MyLog.d(TAG, "getResultCode() " + resultCode);
         int smsId = i.getExtras().getInt(SmsMessage.SMS_ID);
-        Log.d(TAG, "smsId() " + smsId);
+        MyLog.d(TAG, "smsId() " + smsId);
         updateSmsStatus(context, smsId, resultCode);
         CharSequence contentText = null;
         switch (resultCode) {

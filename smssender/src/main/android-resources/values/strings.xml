@@ -26,5 +26,6 @@
     <string name="sms_radio_off_status">Sms not send: radio off</string>
     <string name="sms_send_unknown_status">Sms Receiver status unknown</string>
     <string name="about">about</string>
+    <string name="delete_all_old">delete old tasks</string>
     
 </resources>

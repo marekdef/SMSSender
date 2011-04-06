@@ -5,12 +5,12 @@ import java.util.TimerTask;
 
 import net.retsat1.starlab.smssender.dto.SmsMessage;
 import net.retsat1.starlab.smssender.ui.adapter.SmsCursorAdapter;
+import net.retsat1.starlab.smssender.utils.MyLog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,8 +41,6 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
         Cursor c = managedQuery(SmsMessage.CONTENT_URI, null, null, null, null);
         adapter = new SmsCursorAdapter(this, R.layout.list_item, c);
         getListView().setAdapter(adapter);
-        getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-
         getListView().setOnItemClickListener(this);
         getListView().setOnLongClickListener(this);
     }
@@ -56,7 +54,7 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(TAG, "onPause ");
+        MyLog.d(TAG, "onPause ");
         timer.cancel();
         timer.purge();
         timer = null;
@@ -93,11 +91,8 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
         case R.id.new_sms:
             startActivity(new Intent(this, ScheduleNewSms.class));
             return true;
-        case R.id.delete_checked:
+        case R.id.delete_all_old:
             adapter.deleteAllCheckedItems();
-            return true;
-        case R.id.select_all:
-            adapter.selectAllItems();
             return true;
         case R.id.about:
             showDialog(DIALOG_INFO_ID);
@@ -126,7 +121,7 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
     @Override
     protected Dialog onCreateDialog(int id) {
         Dialog dialog;
-        Log.d(TAG, "onCreateDialog " + id);
+        MyLog.d(TAG, "onCreateDialog " + id);
         switch (id) {
         case DIALOG_INFO_ID:
             dialog = createInfoDialog();
@@ -140,9 +135,9 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        Log.d(TAG, "onListItemClick position" + position);
+        MyLog.d(TAG, "onListItemClick position" + position);
         String selection = l.getItemAtPosition(position).toString();
-        Log.d(TAG, "selection " + selection);
+        MyLog.d(TAG, "selection " + selection);
         super.onListItemClick(l, v, position, id);
     }
 
@@ -161,12 +156,12 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.d(TAG, "onItemClick " + id + " position " + position);
+        MyLog.d(TAG, "onItemClick " + id + " position " + position);
     }
 
     @Override
     public boolean onLongClick(View v) {
-        Log.d(TAG, "onItemClick " + v);
+        MyLog.d(TAG, "onItemClick " + v);
         return true;
     }
 }

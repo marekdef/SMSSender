@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.retsat1.starlab.smssender.dto.SmsMessage;
+import net.retsat1.starlab.smssender.utils.MyLog;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -14,7 +15,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.util.Log;
 
 public class SheduleSmsContentProvider extends ContentProvider {
 
@@ -59,7 +59,7 @@ public class SheduleSmsContentProvider extends ContentProvider {
 
         @Override
         public void onCreate(SQLiteDatabase database) {
-            Log.d(TAG, "onCreate database");
+            MyLog.d(TAG, "onCreate database");
             database.execSQL("CREATE TABLE " + SMS_TABLE_NAME + " (" + SmsMessage.SMS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + SmsMessage.RECEIVER
                     + " VARCHAR(255)," + SmsMessage.MESSAGE + " LONGTEXT," + SmsMessage.MESSAGE_STATUS + " INTEGER," + SmsMessage.DELIVERY_STATUS + " INTEGER,"
                     + SmsMessage.SETUP_DATE + " INTEGER," + SmsMessage.STATUS_DATE + " INTEGER," + SmsMessage.DELIVERY_DATE + " INTEGER" + ");");
@@ -67,7 +67,7 @@ public class SheduleSmsContentProvider extends ContentProvider {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data " + db.isReadOnly()
+            MyLog.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data " + db.isReadOnly()
                     + " open=" + db.isOpen());
 
             db.execSQL("DROP TABLE IF EXISTS " + SMS_TABLE_NAME);

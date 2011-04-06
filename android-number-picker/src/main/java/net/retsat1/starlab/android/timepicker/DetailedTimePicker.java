@@ -9,7 +9,6 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,8 +45,6 @@ public class DetailedTimePicker extends LinearLayout implements OnChangedListene
      */
     private static final OnTimeChangedListener NO_OP_CHANGE_LISTENER = new OnTimeChangedListener() {
         public void onTimeChanged(DetailedTimePicker view, int hourOfDay, int minute, int second) {
-            Log.d(TAG, "DetailedTimePicker.OnTimeChangedListener.onTimeChanged() hourOfDay " + hourOfDay + " minute " + minute + " second " + second);
-
         }
     };
 
@@ -77,7 +74,6 @@ public class DetailedTimePicker extends LinearLayout implements OnChangedListene
 
     public DetailedTimePicker(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Log.d(TAG, "DetailedTimePicker ");
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         inflater.inflate(R.layout.detailed_time_picker, this, true);
@@ -169,7 +165,6 @@ public class DetailedTimePicker extends LinearLayout implements OnChangedListene
      */
     @Override
     protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
-        Log.d(TAG, "dispatchRestoreInstanceState");
         dispatchThawSelfOnly(container);
     }
 
@@ -185,7 +180,6 @@ public class DetailedTimePicker extends LinearLayout implements OnChangedListene
     }
 
     private void onTimeChanged() {
-        Log.d(TAG, "mOnTimeChangedListener " + mOnTimeChangedListener);
         if (mOnTimeChangedListener != null) {
             mOnTimeChangedListener.onTimeChanged(this, getCurrentHour(), getCurrentMinute(), getCurrentSecond());
         }
@@ -261,7 +255,6 @@ public class DetailedTimePicker extends LinearLayout implements OnChangedListene
 
     @Override
     public void onChanged(NumberPicker picker, int oldVal, int newVal) {
-        Log.d(TAG, "picker " + picker.getId());
         switch (picker.getId()) {
         case R.id.hour:
             setCurrentHour(newVal);
@@ -279,27 +272,22 @@ public class DetailedTimePicker extends LinearLayout implements OnChangedListene
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        Log.d(TAG, "onSizeChanged w= " + w + " h=" + h + " oldw=" + oldw + " oldh= " + oldh);
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
     @Override
     protected Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
-
-        Log.d(TAG, "onSaveInstanceState " + mCurrentHour);
         return new SavedState(superState, mCurrentHour, mCurrentMinute, mCurrentSecond);
     }
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        Log.d(TAG, "onRestoreInstanceState ");
         SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
         mCurrentHour = ss.getHour();
         mCurrentMinute = ss.getMinute();
         mCurrentSecond = ss.getSecound();
-        Log.d(TAG, "onRestoreInstanceState mCurrentHour " + mCurrentHour + " mCurrentMinute " + mCurrentMinute + " mCurrentSecond " + mCurrentSecond);
         updateSpinners();
     }
 

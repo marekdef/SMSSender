@@ -23,7 +23,6 @@ import android.text.InputType;
 import android.text.Spanned;
 import android.text.method.NumberKeyListener;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -359,7 +358,6 @@ public class NumberPicker extends LinearLayout {
      * NumberPicker.
      */
     private void notifyChange() {
-        Log.d("notifyChange", "mListener " + mListener);
         if (mListener != null) {
             mListener.onChanged(this, mPrevious, mCurrent);
         }

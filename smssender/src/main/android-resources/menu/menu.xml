@@ -3,10 +3,8 @@
 
 	<item android:id="@+id/new_sms"
 		android:title="@string/new_sms" />
-	<item android:id="@+id/delete_checked"
-		android:title="@string/delete_all_checked" />
-	<item android:id="@+id/select_all"
-		android:title="@string/select_all" />
+	<item android:id="@+id/delete_all_old"
+		android:title="@string/delete_all_old" />
 	<item android:id="@+id/about"
 		android:title="@string/about" />
 </menu>
