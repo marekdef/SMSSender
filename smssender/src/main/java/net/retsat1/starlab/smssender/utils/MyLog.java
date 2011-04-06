@@ -13,7 +13,9 @@ public class MyLog {
     }
 
     public static void d(String TAG, String format, Object... args) {
-        MyLog.d(TAG, String.format(format, args));
+        if (logOn) {
+            MyLog.d(TAG, String.format(format, args));
+        }
     }
 
     public static void v(String TAG, String message) {
@@ -23,7 +25,9 @@ public class MyLog {
     }
 
     public static void v(String TAG, String format, Object... args) {
-        MyLog.v(TAG, String.format(format, args));
+        if (logOn) {
+            MyLog.v(TAG, String.format(format, args));
+        }
     }
 
     public static void e(String TAG, String message) {
@@ -33,7 +37,9 @@ public class MyLog {
     }
 
     public static void e(String TAG, String format, Object... args) {
-        MyLog.e(TAG, String.format(format, args));
+        if (logOn) {
+            MyLog.e(TAG, String.format(format, args));
+        }
     }
 
     public static void e(String TAG, String message, Throwable e) {
@@ -49,7 +55,9 @@ public class MyLog {
     }
 
     public static void i(String TAG, String format, Object... args) {
-        MyLog.i(TAG, String.format(format, args));
+        if (logOn) {
+            MyLog.i(TAG, String.format(format, args));
+        }
     }
 
     public static void w(String TAG, String message) {
