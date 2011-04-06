@@ -26,6 +26,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
@@ -54,12 +55,11 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
     private ProgressDialog progressDialog;
 
     private PhoneContactDao phoneContactDao;
-    private static boolean created = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        MyLog.v(TAG, "onCreate");
         setContentView(R.layout.schedule);
         numberValidator = new NumberHighPaidValidator();
         lenghtNumberValidator = new LenghtNumberValidator();
@@ -72,7 +72,15 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         smsMessageDao = new SmsMessageDaoImpl(this);
         phoneContactDao = new PhoneContactDaoImpl(this);
         setAdapterForNumberEditor();
+        Bundle bundle = getIntent().getExtras();
+        Integer smsID = bundle.getInt("SMS_ID");
+        Log.d(TAG, "smsID " + smsID);
+    }
 
+    @Override
+    protected void onStart() {
+        MyLog.v(TAG, "onStart");
+        super.onStart();
     }
 
     protected static int contactUpdateStatus = 0;

@@ -252,4 +252,10 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
         Integer id = c.getInt(c.getColumnIndex(SmsMessage.SMS_ID));
         smsMessageDao.delete(id);
     }
+
+    public int getSmsIDByPosition(int position) {
+        c.moveToPosition(position);
+        Integer id = c.getInt(c.getColumnIndex(SmsMessage.SMS_ID));
+        return id;
+    }
 }

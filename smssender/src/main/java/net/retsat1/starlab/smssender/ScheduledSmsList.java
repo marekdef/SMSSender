@@ -27,6 +27,7 @@ import android.widget.ListView;
 public class ScheduledSmsList extends ListActivity implements OnClickListener, OnItemClickListener, OnLongClickListener {
     private static final String TAG = ScheduledSmsList.class.getSimpleName();
     private static final int DIALOG_INFO_ID = 1;
+
     private SmsCursorAdapter adapter;
     private Timer timer = null;
     private Button newSmsButton;
@@ -53,6 +54,8 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
         inflater.inflate(R.menu.context_menu, menu);
     }
 
+    private static final String SMS_ID = "SMS_ID";
+
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info;
@@ -65,6 +68,12 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
         MyLog.d(TAG, "aaa " + adapter.getItemId(info.position));
         switch (item.getItemId()) {
         case R.id.edit_context_menu:
+            int smsid = adapter.getSmsIDByPosition(info.position);
+            Intent intent = new Intent(this, ScheduleNewSms.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("SMS_ID", smsid);
+            intent.putExtras(bundle);
+            startActivity(intent);
             return true;
         case R.id.delete_context_menu:
             adapter.delete(info.position);
@@ -74,8 +83,6 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
         case R.id.disabled_context_menu:
             return true;
         }
-        // long id = getListAdapter().getItemId(info.position);
-        // MyLog.d(TAG, "id = " + id);
         return false;
     }
 
