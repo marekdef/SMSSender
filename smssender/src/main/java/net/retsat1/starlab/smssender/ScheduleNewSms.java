@@ -56,6 +56,15 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
     private ProgressDialog progressDialog;
 
     private PhoneContactDao phoneContactDao;
+    /**
+     * used to edit and copy mode;
+     */
+    private SmsMessage smsMessage;
+
+    private int screenMode = 0;
+    private static final int SCREEN_MODE_NEW = 0;
+    private static final int SCREEN_MODE_EDIT = 1;
+    private static final int SCREEN_MODE_COPY = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +92,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         }
         Integer smsID = bundle.getInt("SMS_ID");
         Log.d(TAG, "smsID " + smsID);
-        SmsMessage smsMessage = smsMessageDao.searchByID(smsID);
+        smsMessage = smsMessageDao.searchByID(smsID);
         numberEditText.setText(smsMessage.number);
         messageEditText.setText(smsMessage.message);
         Date d = new Date(smsMessage.deliveryDate);
@@ -91,12 +100,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         timePicker.setCurrentHour(d.getHours());
         timePicker.setCurrentMinute(d.getMinutes());
         timePicker.setCurrentSecond(d.getSeconds());
-    }
-
-    @Override
-    protected void onStart() {
-        MyLog.v(TAG, "onStart");
-        super.onStart();
+        screenMode = SCREEN_MODE_EDIT;
     }
 
     protected static int contactUpdateStatus = 0;
@@ -287,13 +291,38 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
         case R.id.send_button:
-            String number = numberEditText.getText().toString();
-            String message = messageEditText.getText().toString();
-            addMessageToSend(number, message);
+            if (screenMode == SCREEN_MODE_NEW) {
+                String number = numberEditText.getText().toString();
+                String message = messageEditText.getText().toString();
+                addMessageToSend(number, message);
+            } else if (screenMode == SCREEN_MODE_EDIT) {
+                smsMessage.number = numberEditText.getText().toString();
+                smsMessage.message = messageEditText.getText().toString();
+                updateMessage();
+            }
             break;
         default:
             throw new NoSuchElementException("This exception should never be call, please define all menu button");
         }
+    }
+
+    private void updateMessage() {
+        MyLog.d(TAG, "sendMessage number " + smsMessage.number + " message " + smsMessage.message);
+        if (numberValidator.isValid(smsMessage.number)) {
+            Toast.makeText(this, getResources().getString(R.string.this_sms_is_paid), 2000).show();
+            return;
+        }
+        if (!lenghtNumberValidator.isValid(smsMessage.number)) {
+            Toast.makeText(this, getResources().getString(R.string.provide_number), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        smsMessage.deliveryDate = getSetupTime();
+        smsMessage.dateOfSetup = System.currentTimeMillis();
+        smsMessage.dateOfStatus = System.currentTimeMillis();
+        smsMessage.messageStatus = SmsMessage.STATUS_UNSENT;
+        smsMessage.deliveryStatus = SmsMessage.STATUS_UNSENT;
+        alarmSetup(smsMessage);
+        smsMessageDao.update(smsMessage);
     }
 
 }
