@@ -1,5 +1,7 @@
 package net.retsat1.starlab.smssender.validators;
 
+import net.retsat1.starlab.smssender.R;
+
 public class NumberHighPaidValidator implements NumberValidator {
 
     private static final int MIN_LENGTH_PAID_NUMBER = 4;
@@ -7,7 +9,9 @@ public class NumberHighPaidValidator implements NumberValidator {
     private static final String[] FIRST_PAID_DIGT = new String[] { "7", "9" };
 
     /**
-     * Number is a high paid number.
+     * 
+     * This method should answer for question: Can I send on this number ?
+     * Number is a high paid number can not be valid
      */
     @Override
     public boolean isValid(String number) {
@@ -19,11 +23,16 @@ public class NumberHighPaidValidator implements NumberValidator {
                 if (number.startsWith(digt)) { // If number start from 7 or 9
                                                // then number is paid (length
                                                // from 4 to 6)
-                    return true;
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
+    }
+
+    @Override
+    public int getErrorMessageRef() {
+        return R.string.this_sms_is_paid;
     }
 
 }

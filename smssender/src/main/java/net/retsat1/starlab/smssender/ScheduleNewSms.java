@@ -5,7 +5,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.NoSuchElementException;
+
+import javax.xml.bind.ValidationException;
 
 import net.retsat1.starlab.android.timepicker.DetailedTimePicker;
 import net.retsat1.starlab.smssender.dao.PhoneContactDao;
@@ -49,8 +52,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
     private AutoCompleteTextView numberEditText;
 
     private EditText messageEditText;
-    private NumberValidator numberValidator;
-    private NumberValidator lenghtNumberValidator;
+    private List<NumberValidator> validators;
     private SmsMessageDao smsMessageDao;
 
     private ProgressDialog progressDialog;
@@ -73,8 +75,9 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         MyLog.v(TAG, "onCreate");
         setContentView(R.layout.schedule);
         screenMode = SCREEN_MODE_NEW;
-        numberValidator = new NumberHighPaidValidator();
-        lenghtNumberValidator = new LenghtNumberValidator();
+        validators = new ArrayList<NumberValidator>();
+        validators.add(new NumberHighPaidValidator());
+        validators.add(new LenghtNumberValidator());
         datePicker = (DatePicker) findViewById(R.id.dataPicker);
         timePicker = (DetailedTimePicker) findViewById(R.id.detailedTimePicker);
         numberEditText = (AutoCompleteTextView) findViewById(R.id.numberEditText);
@@ -257,13 +260,10 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
     private void addMessageToSend(String number, String message) {
         logTime();
         MyLog.d(TAG, "sendMessage number " + number + " message " + message);
-        if (numberValidator.isValid(number)) {
-            Toast.makeText(this, getResources().getString(R.string.this_sms_is_paid), 2000).show();
-            return;
-        }
-        if (!lenghtNumberValidator.isValid(number)) {
-            Toast.makeText(this, getResources().getString(R.string.provide_number), Toast.LENGTH_SHORT).show();
-            return;
+        try {
+            validNumber(number);
+        } catch (ValidationException e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
         idCode++;
         long timeNow = System.currentTimeMillis();
@@ -272,6 +272,15 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         SmsMessage smsMessage = createNewMessage(reqCode, number, message, scheduledTimeMillis);
         smsMessageDao.insert(smsMessage);
         alarmSetup(smsMessage);
+    }
+
+    private void validNumber(String number) throws ValidationException {
+        for (NumberValidator validator : validators) {
+            if (!validator.isValid(number)) {
+                throw new ValidationException(getResources().getString(validator.getErrorMessageRef()));
+
+            }
+        }
     }
 
     private SmsMessage createNewMessage(int reqCode, String number, String message, long scheduledTimeMillis) {
@@ -342,13 +351,10 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
 
     private void updateMessage() {
         MyLog.d(TAG, "sendMessage number " + smsMessage.number + " message " + smsMessage.message);
-        if (numberValidator.isValid(smsMessage.number)) {
-            Toast.makeText(this, getResources().getString(R.string.this_sms_is_paid), 2000).show();
-            return;
-        }
-        if (!lenghtNumberValidator.isValid(smsMessage.number)) {
-            Toast.makeText(this, getResources().getString(R.string.provide_number), Toast.LENGTH_SHORT).show();
-            return;
+        try {
+            validNumber(smsMessage.number);
+        } catch (ValidationException e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
         smsMessage.deliveryDate = getSetupTime();
         smsMessage.dateOfSetup = System.currentTimeMillis();
