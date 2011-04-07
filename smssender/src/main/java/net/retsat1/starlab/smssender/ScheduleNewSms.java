@@ -63,18 +63,22 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
      */
     private SmsMessage smsMessage;
 
-    private static int screenMode;
+    private int screenMode = 3;
     public static final int SCREEN_MODE_NEW = 3;
     public static final int SCREEN_MODE_EDIT = 1;
     public static final int SCREEN_MODE_COPY = 2;
     public static final String SCREEN_MODE = "SCREEN_MODE";
+
+    // public void setScreenMode(int screenMode) {
+    // Log.d(TAG, "ScreenMode == " + screenMode);
+    // this.screenMode = screenMode;
+    // }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MyLog.v(TAG, "onCreate");
         setContentView(R.layout.schedule);
-        screenMode = SCREEN_MODE_NEW;
         validators = new ArrayList<NumberValidator>();
         validators.add(new NumberHighPaidValidator());
         validators.add(new LenghtNumberValidator());
@@ -87,6 +91,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         smsMessageDao = new SmsMessageDaoImpl(this);
         phoneContactDao = new PhoneContactDaoImpl(this);
         setAdapterForNumberEditor();
+        // setScreenMode(SCREEN_MODE_NEW);
         initEditMode();
         initCopyMode();
     }
@@ -104,7 +109,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         Log.d(TAG, "smsID " + smsID);
         smsMessage = smsMessageDao.searchByID(smsID);
         inflateSmsMessage();
-        screenMode = SCREEN_MODE_COPY;
+        // setScreenMode(SCREEN_MODE_COPY);
     }
 
     private void initEditMode() {
@@ -120,7 +125,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         Log.d(TAG, "smsID " + smsID);
         smsMessage = smsMessageDao.searchByID(smsID);
         inflateSmsMessage();
-        screenMode = SCREEN_MODE_EDIT;
+        // setScreenMode(SCREEN_MODE_EDIT);
     }
 
     private void inflateSmsMessage() {
