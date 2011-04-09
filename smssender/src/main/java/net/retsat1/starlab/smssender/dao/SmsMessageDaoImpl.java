@@ -11,6 +11,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 public class SmsMessageDaoImpl implements SmsMessageDao {
+    private static final String TAG = SmsMessageDaoImpl.class.getSimpleName();
 
     private Context mContext;
     private ContentResolver contentResolver;
@@ -41,7 +42,7 @@ public class SmsMessageDaoImpl implements SmsMessageDao {
         values.put(SmsMessage.STATUS_DATE, smsMessage.dateOfStatus);
         values.put(SmsMessage.DELIVERY_DATE, smsMessage.deliveryDate);
         String where = SmsMessage.SMS_ID + " =?";
-        String[] selectionArgs = new String[] { "" + smsMessage.id };
+        String[] selectionArgs = new String[] { String.valueOf(smsMessage.id) };
         contentResolver.update(SmsMessage.CONTENT_URI, values, where, selectionArgs);
         contentResolver.notifyChange(SmsMessage.CONTENT_URI, null);
         return true;
@@ -67,12 +68,12 @@ public class SmsMessageDaoImpl implements SmsMessageDao {
     @Override
     public SmsMessage searchByID(int smsId) {
         String where = SmsMessage.SMS_ID + " =?";
-        String[] selectionArgs = new String[] { "" + smsId };
+        String[] selectionArgs = new String[] { String.valueOf(smsId) };
         Cursor c = mContext.getContentResolver().query(SmsMessage.CONTENT_URI, null, where, selectionArgs, null);
         SmsMessage smsMessage = null;
         if (c != null && c.getCount() > 0) {
             c.moveToFirst();
-            MyLog.d("TAG", "count =" + c.getCount());
+            MyLog.d(TAG, "count =" + c.getCount());
             smsMessage = new SmsMessage();
             smsMessage.id = smsId;
             smsMessage.message = c.getString(c.getColumnIndex(SmsMessage.MESSAGE));
@@ -89,7 +90,7 @@ public class SmsMessageDaoImpl implements SmsMessageDao {
 
     @Override
     public void delete(int id) {
-        String[] args = new String[] { "" + id };
+        String[] args = new String[] { String.valueOf(id) };
         String where = SmsMessage.SMS_ID + " =?";
         mContext.getContentResolver().delete(SmsMessage.CONTENT_URI, where, args);
     }
