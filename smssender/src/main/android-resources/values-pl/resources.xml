@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="welcome">Witamy w <b>SmsSender</b>!</string>
+    <string name="about_text"><b>Sms Sender</b>\nApplication do wysyłania SMS. \nProszę pamiętać, że włożyliśmy \na sporo serca w aplikację,\nale nie możemy zagwarantować, że \naplikacja jest bezbłędna. \nJeśli chcesz pomóc w tłumaczeniu aplikacji \nprosze napisz na email poniżej.</string>
+    <string name="about_marek"><b>Marek Defeciński</b>\nAndroid Developer\nmarekdef@gmail.com</string>
+    <string name="about_mario"><b>Mariusz Saramak</b>\nAndroid Developer\nmariusz@saramak.eu</string>
+</resources>

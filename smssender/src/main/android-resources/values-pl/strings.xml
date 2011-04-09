@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SmsSender</string>
+    <string name="number_hint">wpisz numer, kontakt</string>
+    <string name="message_hint">Wpisz wiadomość</string>
+    <string name="send_text">Wyślij</string>
+    <string name="new_sms">Nowy Sms</string>
+    <string name="status_not_sent">Sms nie wysłany</string>
+    <string name="delete_all_checked">Usuń zaznaczone</string>
+    <string name="select_all">Zaznacz wszystkie</string>
+    <string name="this_sms_is_paid">Chcesz wysłać sms-a na numer płatny, w tej wersji aplikacji jest to nie możliwe. Kup płatną wersję</string>
+    <string name="sms_delivered">Sms dostarczony</string>
+    <string name="sms_not_delivered">SMS: nie dostarczony</string>
+    <string name="sms_delivered_unknown">Sms: nie znany status dostarczenia</string>
+    <string name="name">Nazwa</string>
+    <string name="phone">Telefon</string>
+    <string name="dialog_alert_title">SmsSender</string>
+    <string name="help_descriptor">Naciśnij Menu,żeby dodać nowy SMS</string>
+    <string name="dialog_empty_message">Wpisz numer lub wiadomość !</string>
+    <string name="provide_number">Wpisz numer telefonu</string>
+    <string name="sms_send_status">Sms wysłany</string>
+    <string name="sms_error_failure_status">Sms nie wysłany: błąd generalny</string>
+    <string name="sms_no_service_status">Sms nie wysłany: błąd brak sygnału</string>
+    <string name="sms_null_pdu_status">Sms nie wysłany: null pdu</string>
+    <string name="sms_radio_off_status">Sms nie wysłany: radio off</string>
+    <string name="sms_send_unknown_status">Nie znany status wysłanego SMSa</string>
+    <string name="about">O programie</string>
+    <string name="delete_all_old">Skasuj stare SMSy</string>
+    <string name="edit">Edytuj</string>
+    <string name="delete">Usuń</string>
+    <string name="enebled">Aktywne</string>
+    <string name="disabled">Nie aktywne</string>
+    <string name="copy">Skopiuj</string>
+</resources>
