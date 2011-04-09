@@ -29,9 +29,10 @@
           android:layout_width="fill_parent" 
           android:layout_height="wrap_content"
           android:layout_alignParentBottom="true"
+        />
+          <!--
           myapp:backgroundColor="#000000"
           myapp:primaryTextColor="#FFFFFF"
           myapp:secondaryTextColor="#CCCCCC"
-          myapp:keywords="Schedule SMS, samsung, htc, motorola"
-        />
+          myapp:keywords="Schedule SMS, samsung, htc, motorola"-->
 </LinearLayout>

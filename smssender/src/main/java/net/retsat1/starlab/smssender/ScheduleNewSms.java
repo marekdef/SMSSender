@@ -28,7 +28,6 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
@@ -37,6 +36,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
+
+import com.admob.android.ads.AdManager;
 
 public class ScheduleNewSms extends Activity implements OnClickListener {
     private static final String TAG = ScheduleNewSms.class.getSimpleName();
@@ -75,6 +76,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         setScreenMode(SCREEN_MODE_NEW);
         MyLog.v(TAG, "onCreate");
         setContentView(R.layout.schedule);
+        AdManager.setTestDevices(new String[] { AdManager.TEST_EMULATOR, "C140898902C284FC38C589D90813F059" });
         validators = new ArrayList<NumberValidator>();
         validators.add(new NumberHighPaidValidator());
         validators.add(new LenghtNumberValidator());
@@ -102,7 +104,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
             return; // This is not a copy mode;
         }
         Integer smsID = bundle.getInt(SmsMessage.SMS_ID);
-        Log.d(TAG, "smsID " + smsID);
+        MyLog.d(TAG, "smsID " + smsID);
         smsMessage = smsMessageDao.searchByID(smsID);
         setScreenMode(SCREEN_MODE_COPY);
         inflateSmsMessage();
@@ -118,7 +120,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
             return; // This is not a edit mode;
         }
         Integer smsID = bundle.getInt(SmsMessage.SMS_ID);
-        Log.d(TAG, "smsID " + smsID);
+        MyLog.d(TAG, "smsID " + smsID);
         smsMessage = smsMessageDao.searchByID(smsID);
         setScreenMode(SCREEN_MODE_EDIT);
         inflateSmsMessage();
@@ -362,7 +364,7 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
     }
 
     public void setScreenMode(int screenMode) {
-        Log.d(TAG, "ScreenMode == " + screenMode);
+        MyLog.d(TAG, "ScreenMode == " + screenMode);
         this.screenMode = screenMode;
     }
 

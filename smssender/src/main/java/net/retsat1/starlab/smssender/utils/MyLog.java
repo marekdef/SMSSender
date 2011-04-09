@@ -4,7 +4,7 @@ import android.util.Log;
 
 public class MyLog {
 
-    public static boolean logOn = true;
+    public static boolean logOn = false;
 
     public static void d(String TAG, String message) {
         if (logOn) {

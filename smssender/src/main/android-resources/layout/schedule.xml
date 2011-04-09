@@ -26,11 +26,13 @@
           android:layout_width="fill_parent" 
           android:layout_height="wrap_content"
           android:layout_alignParentBottom="true"
+        />
+        <!-- 
           myapp:backgroundColor="#000000"
           myapp:primaryTextColor="#FFFFFF"
           myapp:secondaryTextColor="#CCCCCC"
           myapp:keywords="Schedule SMS, samsung, htc, motorola"
-        />
+           -->
 		<Button android:id="@+id/send_button" android:layout_height="wrap_content"
 			android:text="@string/send_text" android:layout_width="match_parent" />
 
