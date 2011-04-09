@@ -26,7 +26,50 @@
 	    </profile>
 	</profiles>
  -->
-	
+	<profiles>
+        <profile>
+            <id>sign</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jarsigner-plugin</artifactId>
+                        <version>1.2</version>
+                        <executions>
+                            <execution>
+                                <id>signing</id>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <inherited>true</inherited>
+                                <configuration>
+                                    <archiveDirectory></archiveDirectory>
+                                    <includes>
+                                        <include>target/*.apk</include>
+                                    </includes>
+                                    <keystore>${env.HOME}/androidkeystore/keystore</keystore>
+                                    <storepass>${pass}</storepass>
+                                    <keypass>${pass}</keypass>
+                                    <alias>saramak.eu</alias>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                        <artifactId>maven-android-plugin</artifactId>
+                        <inherited>true</inherited>
+                        <configuration>
+                            <sign>
+                                <debug>false</debug>
+                            </sign>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 	<dependencies>
 		<!-- 
 		<dependency>
@@ -98,8 +141,9 @@
 					<deleteConflictingFiles>true</deleteConflictingFiles>
 					<assetsDirectory>src/main/android-assets</assetsDirectory>
 					<resourceDirectory>src/main/android-resources</resourceDirectory>
+					
 				</configuration>
-				<version>2.9.0-beta-1</version>
+				<version>2.9.0-beta-2</version>
 				<extensions>true</extensions>
 			</plugin>
 		</plugins>
