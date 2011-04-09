@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import javax.xml.bind.ValidationException;
-
 import net.retsat1.starlab.android.timepicker.DetailedTimePicker;
+import net.retsat1.starlab.smssender.dao.AlarmDao;
+import net.retsat1.starlab.smssender.dao.AlarmDaoImpl;
 import net.retsat1.starlab.smssender.dao.PhoneContactDao;
 import net.retsat1.starlab.smssender.dao.PhoneContactDaoImpl;
 import net.retsat1.starlab.smssender.dao.SmsMessageDao;
@@ -21,11 +21,9 @@ import net.retsat1.starlab.smssender.utils.MyLog;
 import net.retsat1.starlab.smssender.validators.LenghtNumberValidator;
 import net.retsat1.starlab.smssender.validators.NumberHighPaidValidator;
 import net.retsat1.starlab.smssender.validators.NumberValidator;
+import net.retsat1.starlab.smssender.validators.ValidatorException;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -42,41 +40,32 @@ import android.widget.Toast;
 
 public class ScheduleNewSms extends Activity implements OnClickListener {
     private static final String TAG = ScheduleNewSms.class.getSimpleName();
-
     private Button sendButton;
-
     private DatePicker datePicker;
-
     private DetailedTimePicker timePicker;
-
     private AutoCompleteTextView numberEditText;
-
     private EditText messageEditText;
     private List<NumberValidator> validators;
     private SmsMessageDao smsMessageDao;
-
     private ProgressDialog progressDialog;
-
     private PhoneContactDao phoneContactDao;
+    private AlarmDao alarmDao;
     /**
      * used to edit and copy mode;
      */
     private SmsMessage smsMessage;
 
-    private int screenMode = 3;
     public static final int SCREEN_MODE_NEW = 3;
     public static final int SCREEN_MODE_EDIT = 1;
     public static final int SCREEN_MODE_COPY = 2;
     public static final String SCREEN_MODE = "SCREEN_MODE";
 
-    // public void setScreenMode(int screenMode) {
-    // Log.d(TAG, "ScreenMode == " + screenMode);
-    // this.screenMode = screenMode;
-    // }
+    private int screenMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setScreenMode(SCREEN_MODE_NEW);
         MyLog.v(TAG, "onCreate");
         setContentView(R.layout.schedule);
         validators = new ArrayList<NumberValidator>();
@@ -86,14 +75,14 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         timePicker = (DetailedTimePicker) findViewById(R.id.detailedTimePicker);
         numberEditText = (AutoCompleteTextView) findViewById(R.id.numberEditText);
         messageEditText = (EditText) findViewById(R.id.messageEditText);
-        sendButton = (Button) findViewById(R.id.send_button);
-        sendButton.setOnClickListener(this);
         smsMessageDao = new SmsMessageDaoImpl(this);
         phoneContactDao = new PhoneContactDaoImpl(this);
+        alarmDao = new AlarmDaoImpl(this, SendingService.class);
         setAdapterForNumberEditor();
-        // setScreenMode(SCREEN_MODE_NEW);
         initEditMode();
         initCopyMode();
+        sendButton = (Button) findViewById(R.id.send_button);
+        sendButton.setOnClickListener(this);
     }
 
     private void initCopyMode() {
@@ -108,8 +97,8 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         Integer smsID = bundle.getInt(SmsMessage.SMS_ID);
         Log.d(TAG, "smsID " + smsID);
         smsMessage = smsMessageDao.searchByID(smsID);
+        setScreenMode(SCREEN_MODE_COPY);
         inflateSmsMessage();
-        // setScreenMode(SCREEN_MODE_COPY);
     }
 
     private void initEditMode() {
@@ -124,8 +113,8 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         Integer smsID = bundle.getInt(SmsMessage.SMS_ID);
         Log.d(TAG, "smsID " + smsID);
         smsMessage = smsMessageDao.searchByID(smsID);
+        setScreenMode(SCREEN_MODE_EDIT);
         inflateSmsMessage();
-        // setScreenMode(SCREEN_MODE_EDIT);
     }
 
     private void inflateSmsMessage() {
@@ -262,28 +251,31 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
 
     private static final long DATE_27_III_2011 = 1301258571993L;
 
-    private void addMessageToSend(String number, String message) {
+    private SmsMessage addMessageToSend(String number, String message) {
         logTime();
         MyLog.d(TAG, "sendMessage number " + number + " message " + message);
         try {
             validNumber(number);
-        } catch (ValidationException e) {
+        } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
         idCode++;
-        long timeNow = System.currentTimeMillis();
         long scheduledTimeMillis = getSetupTime();
-        int reqCode = (int) ((timeNow - DATE_27_III_2011) + idCode);
+        int reqCode = generateNewUniqueCode();
         SmsMessage smsMessage = createNewMessage(reqCode, number, message, scheduledTimeMillis);
         smsMessageDao.insert(smsMessage);
-        alarmSetup(smsMessage);
+        return smsMessage;
     }
 
-    private void validNumber(String number) throws ValidationException {
+    private int generateNewUniqueCode() {
+        long timeNow = System.currentTimeMillis();
+        return (int) ((timeNow - DATE_27_III_2011) + idCode);
+    }
+
+    private void validNumber(String number) throws ValidatorException {
         for (NumberValidator validator : validators) {
             if (!validator.isValid(number)) {
-                throw new ValidationException(getResources().getString(validator.getErrorMessageRef()));
-
+                throw new ValidatorException(getResources().getString(validator.getErrorMessageRef()));
             }
         }
     }
@@ -299,16 +291,6 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         smsMessage.messageStatus = SmsMessage.STATUS_UNSENT;
         smsMessage.deliveryStatus = SmsMessage.STATUS_UNSENT;
         return smsMessage;
-    }
-
-    private void alarmSetup(SmsMessage smsMessage) {
-
-        MyLog.d(TAG, "Data when" + smsMessage.deliveryDate);
-        Intent intent = new Intent(this, SendingService.class);
-        intent.putExtra(SmsMessage.SMS_ID, smsMessage.id);
-        PendingIntent pendingIntent = PendingIntent.getService(this, smsMessage.id, intent, PendingIntent.FLAG_ONE_SHOT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, smsMessage.deliveryDate, pendingIntent);
     }
 
     private long getSetupTime() {
@@ -332,21 +314,35 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
         case R.id.send_button:
+
             if (screenMode == SCREEN_MODE_NEW) {
                 String number = numberEditText.getText().toString();
                 String message = messageEditText.getText().toString();
-                addMessageToSend(number, message);
+                smsMessage = addMessageToSend(number, message);
+                alarmDao.setAlarm(smsMessage);
             } else if (screenMode == SCREEN_MODE_EDIT) {
                 smsMessage.number = numberEditText.getText().toString();
                 smsMessage.message = messageEditText.getText().toString();
-                updateMessage();
-                smsMessageDao.update(smsMessage);
+                try {
+                    updateMessage();
+                    smsMessageDao.update(smsMessage);
+                    alarmDao.setAlarm(smsMessage);
+                } catch (ValidatorException e) {
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             } else if (screenMode == SCREEN_MODE_COPY) {
                 smsMessage.number = numberEditText.getText().toString();
                 smsMessage.message = messageEditText.getText().toString();
-                updateMessage();
-                smsMessageDao.insert(smsMessage);
+                smsMessage = createNewMessage(generateNewUniqueCode(), smsMessage.number, smsMessage.message, 0);
+                try {
+                    updateMessage();
+                    smsMessageDao.insert(smsMessage);
+                    alarmDao.setAlarm(smsMessage);
+                } catch (ValidatorException e) {
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
+
             finish();
             break;
         default:
@@ -354,20 +350,20 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         }
     }
 
-    private void updateMessage() {
+    private void updateMessage() throws ValidatorException {
         MyLog.d(TAG, "sendMessage number " + smsMessage.number + " message " + smsMessage.message);
-        try {
-            validNumber(smsMessage.number);
-        } catch (ValidationException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+        validNumber(smsMessage.number);
         smsMessage.deliveryDate = getSetupTime();
         smsMessage.dateOfSetup = System.currentTimeMillis();
         smsMessage.dateOfStatus = System.currentTimeMillis();
         smsMessage.messageStatus = SmsMessage.STATUS_UNSENT;
         smsMessage.deliveryStatus = SmsMessage.STATUS_UNSENT;
-        alarmSetup(smsMessage);
 
+    }
+
+    public void setScreenMode(int screenMode) {
+        Log.d(TAG, "ScreenMode == " + screenMode);
+        this.screenMode = screenMode;
     }
 
 }

@@ -1,5 +1,7 @@
 package net.retsat1.starlab.smssender.dao;
 
+import java.util.List;
+
 import net.retsat1.starlab.smssender.dto.SmsMessage;
 
 public interface SmsMessageDao {
@@ -13,5 +15,7 @@ public interface SmsMessageDao {
     public SmsMessage searchByID(int smsId);
 
     public void delete(int id);
+
+    public List<SmsMessage> getAllMessages();
 
 }

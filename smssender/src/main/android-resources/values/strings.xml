@@ -7,8 +7,8 @@
     <string name="new_sms">New SMS</string>
     <string name="status_not_sent">Not sent</string>
     <string name="delete_all_checked">Delete all checked</string>
-    <string name="select_all">select all</string>
-    <string name="this_sms_is_paid">This SMS is paid. Bay paid version of application to send paid sms</string>
+    <string name="select_all">Select all</string>
+    <string name="this_sms_is_paid">This is a paid  SMS. Bay a paid version of application to send paid sms</string>
     <string name="sms_delivered">Sms delivered</string>
     <string name="sms_not_delivered">SMS not delivered</string>
     <string name="sms_delivered_unknown">SMS delivered status unknown</string>

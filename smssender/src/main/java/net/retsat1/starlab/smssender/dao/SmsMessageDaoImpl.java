@@ -1,5 +1,8 @@
 package net.retsat1.starlab.smssender.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.retsat1.starlab.smssender.dto.SmsMessage;
 import net.retsat1.starlab.smssender.utils.MyLog;
 import android.content.ContentResolver;
@@ -89,6 +92,28 @@ public class SmsMessageDaoImpl implements SmsMessageDao {
         String[] args = new String[] { "" + id };
         String where = SmsMessage.SMS_ID + " =?";
         mContext.getContentResolver().delete(SmsMessage.CONTENT_URI, where, args);
+    }
+
+    @Override
+    public List<SmsMessage> getAllMessages() {
+        ArrayList<SmsMessage> list = new ArrayList<SmsMessage>();
+        Cursor c = mContext.getContentResolver().query(SmsMessage.CONTENT_URI, null, null, null, null);
+        MyLog.d("TAG", "count =" + c.getCount());
+        while (c.moveToNext()) {
+            SmsMessage smsMessage = new SmsMessage();
+            smsMessage.id = c.getInt(c.getColumnIndex(SmsMessage.SMS_ID));
+            smsMessage.message = c.getString(c.getColumnIndex(SmsMessage.MESSAGE));
+            smsMessage.number = c.getString(c.getColumnIndex(SmsMessage.RECEIVER));
+            smsMessage.deliveryDate = c.getLong(c.getColumnIndex(SmsMessage.DELIVERY_DATE));
+            smsMessage.deliveryStatus = c.getInt(c.getColumnIndex(SmsMessage.DELIVERY_STATUS));
+            smsMessage.messageStatus = c.getInt(c.getColumnIndex(SmsMessage.MESSAGE_STATUS));
+            smsMessage.dateOfSetup = c.getLong(c.getColumnIndex(SmsMessage.SETUP_DATE));
+            smsMessage.dateOfStatus = c.getLong(c.getColumnIndex(SmsMessage.STATUS_DATE));
+            list.add(smsMessage);
+        }
+        c.close();
+        return list;
+
     }
 
 }

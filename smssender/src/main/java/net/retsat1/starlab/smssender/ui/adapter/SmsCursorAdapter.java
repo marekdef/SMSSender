@@ -1,10 +1,10 @@
 package net.retsat1.starlab.smssender.ui.adapter;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import net.retsat1.starlab.smssender.R;
+import net.retsat1.starlab.smssender.dao.AlarmDao;
+import net.retsat1.starlab.smssender.dao.AlarmDaoImpl;
 import net.retsat1.starlab.smssender.dao.SmsMessageDao;
 import net.retsat1.starlab.smssender.dao.SmsMessageDaoImpl;
 import net.retsat1.starlab.smssender.dto.SmsMessage;
@@ -12,32 +12,27 @@ import net.retsat1.starlab.smssender.service.SendingService;
 import net.retsat1.starlab.smssender.utils.DateUtils;
 import net.retsat1.starlab.smssender.utils.MyLog;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedChangeListener {
+public class SmsCursorAdapter extends SimpleCursorAdapter {
 
     private static final String TAG = "SmsCursorAdapter";
     private Cursor c;
     private Context context;
-    private Set<Integer> checkList = Collections.synchronizedSet(new HashSet<Integer>());
     static String[] valuePosition = { SmsMessage.RECEIVER, SmsMessage.MESSAGE, SmsMessage.MESSAGE_STATUS };
     static int[] uiPosition = { R.id.numberText, R.id.messageText, R.id.stat };
     private int[] mFrom;
     private LayoutInflater li;
     private SmsMessageDao smsMessageDao;
+    private AlarmDao alarmDao;
 
     public SmsCursorAdapter(Context context, int layout, Cursor c) {
         super(context, layout, c, valuePosition, uiPosition);
@@ -47,6 +42,7 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
         li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         c.setNotificationUri(context.getContentResolver(), SmsMessage.CONTENT_URI);
         smsMessageDao = new SmsMessageDaoImpl(context);
+        alarmDao = new AlarmDaoImpl(context, SendingService.class);
 
     }
 
@@ -71,16 +67,6 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
             mFrom = null;
         }
     }
-
-    // @Override
-    // public synchronized View newView(Context context, Cursor cursor,
-    // ViewGroup parent) {
-    // View v = li.inflate(R.layout.list_item, parent, false);
-    // Integer id = cursor.getInt(cursor.getColumnIndex(SmsMessage.SMS_ID));
-    // MyLog.d(TAG, "newView ID=" + id + " checked= " + cb.isChecked());
-    //
-    // return v;
-    // }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
@@ -197,59 +183,10 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
 
     }
 
-    public void deleteAllCheckedItems() {
-
-        if (!checkList.isEmpty()) {
-            Set<Integer> list1 = Collections.unmodifiableSet(checkList);
-            for (Integer id : list1) {
-                cancelAlarm(id);
-                smsMessageDao.delete(id);
-            }
-        }
-        checkList.clear();
-        notifyDataSetInvalidated();
-        notifyDataSetChanged();
-    }
-
-    private void cancelAlarm(Integer id) {
-        Intent intent = new Intent(context, SendingService.class);
-        intent.putExtra(SmsMessage.SMS_ID, id);
-        PendingIntent pendingIntent = PendingIntent.getService(context, id, intent, PendingIntent.FLAG_ONE_SHOT);
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
-        alarmManager.cancel(pendingIntent);
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        MyLog.d(TAG, "TAG " + buttonView.getTag());
-        synchronized (checkList) {
-            if (isChecked) {
-                checkList.add((Integer) buttonView.getTag());
-            } else {
-                checkList.remove((Integer) buttonView.getTag());
-            }
-        }
-
-    }
-
-    public void selectAllItems() {
-        MyLog.d(TAG, "selectAllItems");
-        if (getCount() > 0) {
-            c.moveToFirst();
-            do {
-                Integer id = c.getInt(c.getColumnIndex(SmsMessage.SMS_ID));
-                synchronized (checkList) {
-                    checkList.add(id);
-                }
-            } while (c.moveToNext());
-            notifyDataSetInvalidated();
-            notifyDataSetChanged();
-        }
-    }
-
     public void delete(int position) {
         c.moveToPosition(position);
         Integer id = c.getInt(c.getColumnIndex(SmsMessage.SMS_ID));
+        alarmDao.deleteAlarm(id);
         smsMessageDao.delete(id);
     }
 
@@ -257,5 +194,17 @@ public class SmsCursorAdapter extends SimpleCursorAdapter implements OnCheckedCh
         c.moveToPosition(position);
         Integer id = c.getInt(c.getColumnIndex(SmsMessage.SMS_ID));
         return id;
+    }
+
+    public void deleteOldTasks() {
+        List<SmsMessage> messages = smsMessageDao.getAllMessages();
+        for (SmsMessage smsMessage : messages) {
+            if (smsMessage.messageStatus == Activity.RESULT_OK) {
+                smsMessageDao.delete(smsMessage.id);
+            }
+        }
+        notifyDataSetInvalidated();
+        notifyDataSetChanged();
+
     }
 }

@@ -146,7 +146,7 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
             startActivity(new Intent(this, ScheduleNewSms.class));
             return true;
         case R.id.delete_all_old:
-            adapter.deleteAllCheckedItems();
+            adapter.deleteOldTasks();
             return true;
         case R.id.about:
             showDialog(DIALOG_INFO_ID);

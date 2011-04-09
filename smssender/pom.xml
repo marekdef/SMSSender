@@ -44,6 +44,12 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.admob.android.ads</groupId>
+			<artifactId>android</artifactId>
+			<version>20101109</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
 			<groupId>net.starlab.retsat1.android</groupId>
 			<artifactId>android-number-picker</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
