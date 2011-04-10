@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="net.retsat1.starlab.smssender" android:versionCode="1"
-	android:versionName="0.4" android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+	package="net.retsat1.starlab.smssender" android:versionCode="2"
+	android:versionName="0.41" android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 	<uses-sdk android:minSdkVersion="7" />
 	<supports-screens android:resizeable="true"
 		android:smallScreens="true" android:normalScreens="true"
@@ -33,9 +33,9 @@
 		<service android:name=".service.SendingService"></service>
 
 		<!-- The application's publisher ID assigned by AdMob 
-		<meta-data android:value="" android:name="ADMOB_PUBLISHER_ID" />
-		<meta-data android:value="" android:name="ADMOB_INTERSTITIAL_PUBLISHER_ID" />
 		-->
+		<meta-data android:value="a14da16f069e1ba" android:name="ADMOB_PUBLISHER_ID" />
+		<meta-data android:value="a14da16f069e1ba" android:name="ADMOB_INTERSTITIAL_PUBLISHER_ID" />
 	</application>
 	<uses-permission android:name="android.permission.SEND_SMS" />
 	<uses-permission android:name="android.permission.READ_CONTACTS" />
