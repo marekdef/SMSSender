@@ -22,6 +22,12 @@ import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+/**
+ * Cursor to manage sms data.
+ * 
+ * @author mario
+ * 
+ */
 public class SmsCursorAdapter extends SimpleCursorAdapter {
 
     private static final String TAG = "SmsCursorAdapter";

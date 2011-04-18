@@ -4,7 +4,6 @@ import net.retsat1.starlab.smssender.dao.SmsMessageDaoImpl;
 import net.retsat1.starlab.smssender.dto.SmsMessage;
 import net.retsat1.starlab.smssender.utils.MyLog;
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,11 +14,6 @@ public class SmsStatusSendReceiver extends BroadcastReceiver {
 
     private static final String TAG = "SmsStatusSendReceiver";
     private SmsMessageDaoImpl smsMessageDao;
-    private NotificationManager notificationManager;
-
-    public SmsStatusSendReceiver() {
-
-    }
 
     @Override
     public void onReceive(Context context, Intent i) {

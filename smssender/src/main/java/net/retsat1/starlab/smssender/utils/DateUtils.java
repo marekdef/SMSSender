@@ -12,6 +12,12 @@ public class DateUtils {
     private static final String STRING_DAY = "d ";
     private static final String STRING_YEAR = "y ";
 
+    /**
+     * Format date, get nice looking string for time
+     * 
+     * @param time
+     * @return
+     */
     public static String changeSecToNiceDate(long time) {
         if (time < NUMBER_OF_SEC_FOR_MIN) {
             int sec = getSec(time);
@@ -41,6 +47,12 @@ public class DateUtils {
         }
     }
 
+    /**
+     * Change one digit number to two digit number: 1 change to 01
+     * 
+     * @param number
+     * @return
+     */
     private static String formatTo2Digits(int number) {
         if (number < 10) {
             return "0" + number;
@@ -48,6 +60,12 @@ public class DateUtils {
         return number + "";
     }
 
+    /**
+     * Take from full time year.
+     * 
+     * @param time
+     * @return year
+     */
     private static int getYear(long time) {
         return (int) (time / NUMBER_OF_SEC_FOR_YEAR);
     }

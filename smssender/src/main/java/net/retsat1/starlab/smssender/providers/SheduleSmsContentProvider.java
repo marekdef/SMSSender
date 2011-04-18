@@ -16,6 +16,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
+/**
+ * Sms content provider to provide information about sms
+ * 
+ * @author mario
+ * 
+ */
 public class SheduleSmsContentProvider extends ContentProvider {
 
     public static final String TAG = "SheduleSmsContentProvider";

@@ -2,6 +2,12 @@ package net.retsat1.starlab.smssender.utils;
 
 import android.util.Log;
 
+/**
+ * Class for automatically turn off logs.
+ * 
+ * @author mario
+ * 
+ */
 public class MyLog {
 
     public static boolean logOn = false;
