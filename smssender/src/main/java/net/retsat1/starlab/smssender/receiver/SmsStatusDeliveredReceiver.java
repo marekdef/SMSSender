@@ -48,6 +48,9 @@ public class SmsStatusDeliveredReceiver extends BroadcastReceiver {
     private void updateSmsStatus(Context context, int smsId, int resultCode) {
         smsMessageDao = new SmsMessageDaoImpl(context);
         SmsMessage smsMessage = smsMessageDao.searchByID(smsId);
+        if (smsMessage == null) {
+            return;
+        }
         MyLog.d(TAG, "Sms message found " + smsMessage.messageStatus);
         smsMessage.deliveryStatus = resultCode;
         smsMessageDao.update(smsMessage);
