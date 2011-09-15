@@ -13,7 +13,6 @@ public class PhoneContactDTO {
             while (tempPhoneNumber != null) {
                 tempPhoneNumber = tempPhoneNumber.next;
             }
-            tempPhoneNumber.next = phone;
         }
 
     }

@@ -6,26 +6,6 @@
 	<packaging>apk</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>smssender</name>
-	<!-- 
-	<profiles>
-	  <profile>
-	      <id>sonar</id>
-	      <activation>
-	        <activeByDefault>false</activeByDefault>
-	      </activation>     
-	      <properties>
-	      
-	        <sonar.jdbc.url>jdbc:postgresql://localhost/sonar</sonar.jdbc.url>
-	        <sonar.jdbc.username>mario</sonar.jdbc.username>
-	        <sonar.jdbc.password>qwerty</sonar.jdbc.password>
-	        <sonar.jdbc.driver>org.postgresql.Driver</sonar.jdbc.driver>
-	         SERVER ON A REMOTE HOST 
-			<sonar.host.url>http://localhost:9000</sonar.host.url>
-	      </properties>
-	      
-	    </profile>
-	</profiles>
- -->
 	<profiles>
         <profile>
             <id>sign</id>
@@ -88,8 +68,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.admob.android.ads</groupId>
-			<artifactId>android</artifactId>
-			<version>20101109</version>
+			<artifactId>GoogleAdMobAdsSdk</artifactId>
+			<version>4.1.1</version>
 			<type>jar</type>
 		</dependency>
 		<dependency>
