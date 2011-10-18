@@ -24,8 +24,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import com.admob.android.ads.AdManager;
-
 public class ScheduledSmsList extends ListActivity implements OnClickListener, OnItemClickListener, OnLongClickListener {
     private static final String TAG = ScheduledSmsList.class.getSimpleName();
     private static final int DIALOG_INFO_ID = 1;
@@ -38,7 +36,6 @@ public class ScheduledSmsList extends ListActivity implements OnClickListener, O
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sms_list);
-        AdManager.setTestDevices(new String[] { AdManager.TEST_EMULATOR, "C140898902C284FC38C589D90813F059" });
         // Tell the list view which view to display when the list is empty
         newSmsButton = (Button) findViewById(R.id.new_sms);
         newSmsButton.setOnClickListener(this);

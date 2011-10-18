@@ -37,8 +37,6 @@ import android.widget.EditText;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-import com.admob.android.ads.AdManager;
-
 public class ScheduleNewSms extends Activity implements OnClickListener {
     private static final String TAG = ScheduleNewSms.class.getSimpleName();
 
@@ -76,7 +74,6 @@ public class ScheduleNewSms extends Activity implements OnClickListener {
         setScreenMode(SCREEN_MODE_NEW);
         MyLog.v(TAG, "onCreate");
         setContentView(R.layout.schedule);
-        AdManager.setTestDevices(new String[] { AdManager.TEST_EMULATOR, "C140898902C284FC38C589D90813F059" });
         validators = new ArrayList<NumberValidator>();
         validators.add(new NumberHighPaidValidator());
         validators.add(new LenghtNumberValidator());

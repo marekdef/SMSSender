@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>net.retsat1.starlab.android.smssender</groupId>
-	<artifactId>smssender</artifactId>
-	<packaging>apk</packaging>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>smssender</name>
-	<profiles>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.retsat1.starlab.android.smssender</groupId>
+    <artifactId>smssender</artifactId>
+    <packaging>apk</packaging>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>smssender</name>
+    <profiles>
         <profile>
             <id>sign</id>
             <build>
@@ -50,82 +50,65 @@
             </build>
         </profile>
     </profiles>
-	<dependencies>
-		<!-- 
-		<dependency>
-    		<groupId>org.codehaus.sonar</groupId>
-    		<artifactId>sonar-maven-plugin</artifactId>
-    		<version>2.6</version>
-		</dependency>
-		 -->
-		<!-- http://repo1.maven.org/maven2/org/codehaus/sonar/ -->
-		<dependency>
-			<groupId>com.google.android</groupId>
-			<artifactId>android</artifactId>
-			<version>2.1.2</version>
-			<type>jar</type>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.admob.android.ads</groupId>
-			<artifactId>GoogleAdMobAdsSdk</artifactId>
-			<version>4.1.1</version>
-			<type>jar</type>
-		</dependency>
-		<dependency>
-			<groupId>net.starlab.retsat1.android</groupId>
-			<artifactId>android-number-picker</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<type>apklib</type>
-		</dependency>
-		<!-- -->
-	</dependencies>
-
-	<build>
-		<!-- To define the plugin version in your parent POM -->
-	    <pluginManagement>
-	      <plugins>
-	        <plugin>
-	          <groupId>org.codehaus.mojo</groupId>
-	          <artifactId>sonar-maven-plugin</artifactId>
-	          <version>2.0-beta-2</version>
-	        </plugin>
-	      </plugins>
-	    </pluginManagement>
-		<plugins>
-		
-	        <plugin>
-		        <groupId>org.codehaus.sonar</groupId>
-		        <artifactId>sonar-maven-plugin</artifactId>
-		        <version>2.6</version>
-		      </plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-				<version>2.3.2</version>
-			</plugin>
-			<plugin>
-				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
-				<artifactId>maven-android-plugin</artifactId>
-				<configuration>
-					<sdk>
-						<platform>8</platform>
-					</sdk>
-					<emulator>
-						<avd>a2_22</avd>
-					</emulator>
-					<deleteConflictingFiles>true</deleteConflictingFiles>
-					<assetsDirectory>src/main/android-assets</assetsDirectory>
-					<resourceDirectory>src/main/android-resources</resourceDirectory>
-					
-				</configuration>
-				<version>2.9.0-beta-2</version>
-				<extensions>true</extensions>
-			</plugin>
-		</plugins>
-	</build>
+    <dependencies>
+       <!-- http://repo1.maven.org/maven2/org/codehaus/sonar/ -->
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>android</artifactId>
+            <version>2.1.2</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.admob.android.ads</groupId>
+            <artifactId>GoogleAdMobAdsSdk</artifactId>
+            <version>4.1.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>net.starlab.retsat1.android</groupId>
+            <artifactId>android-number-picker</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>apklib</type>
+        </dependency>
+        <!-- -->
+    </dependencies>
+    
+    <build>
+        <!-- To define the plugin version in your parent POM -->
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.sonar</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>2.10</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+                <version>2.3.2</version>
+            </plugin>
+            <plugin>
+                <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                <artifactId>maven-android-plugin</artifactId>
+                <configuration>
+                    <sdk>
+                        <platform>8</platform>
+                    </sdk>
+                    <emulator>
+                        <avd>a2_22</avd>
+                    </emulator>
+                    <deleteConflictingFiles>true</deleteConflictingFiles>
+                    <assetsDirectory>src/main/android-assets</assetsDirectory>
+                    <resourceDirectory>src/main/android-resources</resourceDirectory>
+                    
+                </configuration>
+                <version>2.9.0-beta-2</version>
+                <extensions>true</extensions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
